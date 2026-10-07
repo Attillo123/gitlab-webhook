@@ -1,6 +1,9 @@
 services:
   gitlab-webhook:
-    build: .
+    image: ${GITLAB_WEBHOOK_IMAGE:-gitlab-webhook:latest}
+    pull_policy: missing
+    build:
+      context: .
     restart: unless-stopped
     env_file:
       - .env

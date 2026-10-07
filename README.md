@@ -50,8 +50,10 @@ Webhook 地址为 `POST /webhook/gitlab/{bot_id}`，健康检查地址为 `GET /
 ```powershell
 Copy-Item .env.example .env
 # 编辑 .env 后执行
-docker compose up -d --build
+docker compose up -d
 ```
+
+Compose 支持在 `.env` 中填写 `GITLAB_WEBHOOK_IMAGE`。服务同时配置了镜像名和本地构建上下文，并设置 `pull_policy: missing`：本地已有镜像时直接使用；本地没有时先尝试从镜像仓库拉取，仓库中也没有该镜像时由 Compose 使用当前目录的 Dockerfile 构建同名镜像。默认值为 `gitlab-webhook:latest`。更新本地代码后，使用 `docker compose up -d --build` 强制重建。
 
 在 GitLab 项目 Webhook、群组 Webhook 或 System Hook 中设置对应机器人的 URL，例如：
 

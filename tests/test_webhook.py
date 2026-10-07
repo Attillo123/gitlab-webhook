@@ -1,7 +1,11 @@
 import asyncio
+import base64
+import hashlib
+import hmac
 import json
 from dataclasses import replace
 from pathlib import Path
+import time
 
 import httpx
 import pytest
@@ -11,20 +15,35 @@ from app.feishu import FeishuDeliveryError, webhook_url
 
 BOT_A = "c33921dd-bd41-415a-b4cb-7b1339da8e86"
 BOT_B = "6e6eeb35-8474-42f8-bdb1-6c74b212d50c"
+HOOK_ID = "shared-hook"
+RAW_SIGNING_KEY = b"webhook-test-signing-key"
+SIGNING_TOKEN = "whsec_" + base64.b64encode(RAW_SIGNING_KEY).decode("ascii")
 
 SAMPLES = json.loads((Path(__file__).parent / "fixtures" / "official_events.json").read_text(encoding="utf-8"))["samples"]
 
 
-def post(payload, headers=None, bot_id=BOT_A):
+def post(payload, headers=None, bot_id=BOT_A, hook_id=HOOK_ID, signed=True):
+    body = json.dumps(payload, separators=(",", ":")).encode()
+    request_headers = dict(headers or {})
+    if signed:
+        message_id = request_headers.get("Idempotency-Key") or hashlib.sha256(body).hexdigest()
+        timestamp = str(int(time.time()))
+        signed_content = message_id.encode() + b"." + timestamp.encode() + b"." + body
+        digest = hmac.new(RAW_SIGNING_KEY, signed_content, hashlib.sha256).digest()
+        request_headers.update({
+            "webhook-id": message_id,
+            "webhook-timestamp": timestamp,
+            "webhook-signature": "v1," + base64.b64encode(digest).decode("ascii"),
+        })
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
-            return await client.post(f"/webhook/gitlab/{bot_id}", json=payload, headers=headers or {})
+            return await client.post(f"/webhook/gitlab/{bot_id}/{hook_id}", content=body, headers=request_headers)
     return asyncio.run(request())
 
 
 @pytest.fixture(autouse=True)
 def isolated_service(monkeypatch):
-    monkeypatch.setattr(main, "settings", replace(main.settings, gitlab_secret_token="test-secret"))
+    monkeypatch.setattr(main, "settings", replace(main.settings, gitlab_signing_tokens={HOOK_ID: SIGNING_TOKEN}))
     monkeypatch.setattr(main, "dedupe", main.DedupeCache(60))
 
 
@@ -46,7 +65,7 @@ def test_token_must_be_valid_before_delivery(monkeypatch):
     async def never_send(*args):
         pytest.fail("Unauthorized request was forwarded")
     monkeypatch.setattr(main, "send_to_feishu", never_send)
-    assert post({}, {"X-Gitlab-Token": "wrong"}).status_code == 401
+    assert post({}, {"X-Gitlab-Token": "wrong"}, signed=False).status_code == 401
 
 
 def test_failure_can_be_retried_and_success_is_deduplicated(monkeypatch):
@@ -132,14 +151,14 @@ def test_system_event_requires_authentication(monkeypatch):
     async def never_send(*args):
         pytest.fail("Unauthorized System Hook reached Feishu")
     monkeypatch.setattr(main, "send_to_feishu", never_send)
-    response = post({"event_name": "user_create"}, {"X-Gitlab-Event": "System Hook", "X-Gitlab-Token": "wrong"})
+    response = post({"event_name": "user_create"}, {"X-Gitlab-Event": "System Hook", "X-Gitlab-Token": "wrong"}, signed=False)
     assert response.status_code == 401
 
 
 def test_bot_id_is_required():
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
-            return await client.post("/webhook/gitlab", json={}, headers={"X-Gitlab-Token": "test-secret"})
+            return await client.post("/webhook/gitlab", json={})
     response = asyncio.run(request())
     assert response.status_code == 404
 
@@ -148,7 +167,7 @@ def test_bot_id_is_required():
 def test_invalid_bot_id_is_rejected(bot_id):
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
-            return await client.post(f"/webhook/gitlab/{bot_id}", json={}, headers={"X-Gitlab-Token": "test-secret"})
+            return await client.post(f"/webhook/gitlab/{bot_id}/{HOOK_ID}", json={})
     response = asyncio.run(request())
     assert response.status_code in {400, 404}
 
@@ -168,7 +187,17 @@ def test_different_path_ids_select_different_feishu_bots(monkeypatch):
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
             for bot_id in (BOT_A, BOT_B):
-                response = await client.post(f"/webhook/gitlab/{bot_id}", json={"object_kind": "push"}, headers={"X-Gitlab-Token": "test-secret", "Idempotency-Key": "same-gitlab-event"})
+                body = b'{"object_kind":"push"}'
+                message_id = "same-gitlab-event"
+                timestamp = str(int(__import__("time").time()))
+                signed_content = message_id.encode() + b"." + timestamp.encode() + b"." + body
+                digest = hmac.new(RAW_SIGNING_KEY, signed_content, hashlib.sha256).digest()
+                headers = {
+                    "webhook-id": message_id,
+                    "webhook-timestamp": timestamp,
+                    "webhook-signature": "v1," + base64.b64encode(digest).decode("ascii"),
+                }
+                response = await client.post(f"/webhook/gitlab/{bot_id}/{HOOK_ID}", content=body, headers=headers)
                 assert response.status_code == 200
     asyncio.run(request())
     assert selected == [BOT_A, BOT_B]

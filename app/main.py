@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import time
 from collections import OrderedDict
 from typing import Any
@@ -51,14 +52,19 @@ async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/webhook/gitlab/{bot_id}")
-async def gitlab_webhook(bot_id: str, request: Request) -> dict[str, Any]:
+@app.post("/webhook/gitlab/{bot_id}/{hook_id}")
+async def gitlab_webhook(bot_id: str, hook_id: str, request: Request) -> dict[str, Any]:
     from .feishu import webhook_url
 
     try:
         webhook_url(bot_id)
     except FeishuDeliveryError as exc:
         raise HTTPException(status_code=400, detail="Invalid Feishu bot ID; expected a UUID") from exc
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", hook_id):
+        raise HTTPException(status_code=400, detail="Invalid GitLab hook ID")
+    signing_token = settings.gitlab_signing_tokens.get(hook_id)
+    if signing_token is None:
+        raise HTTPException(status_code=404, detail="Unknown GitLab hook ID")
     raw = await request.body()
     try:
         payload = json.loads(raw or b"{}")
@@ -70,8 +76,7 @@ async def gitlab_webhook(bot_id: str, request: Request) -> dict[str, Any]:
         auth_method = verify_gitlab_request(
             request.headers,
             raw,
-            settings.gitlab_signing_token,
-            settings.gitlab_secret_token,
+            signing_token,
             settings.gitlab_webhook_tolerance_seconds,
         )
     except GitLabAuthenticationError as exc:

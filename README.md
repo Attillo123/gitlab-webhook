@@ -1,6 +1,6 @@
 # GitLab → 飞书 Webhook 中转服务
 
-这是一个使用 FastAPI 编写的 GitLab Webhook 中转服务。多个项目或群组可共用 `POST /webhook/gitlab/{bot_id}`，按路径中的飞书机器人 ID 选择目标机器人，再转换成飞书 `post` 富文本通知。格式和测试以 GitLab 官方事件文档的完整 payload 为依据。
+这是一个使用 FastAPI 编写的 GitLab Webhook 中转服务。多个项目或群组可共用 `POST /webhook/gitlab/{bot_id}/{hook_id}`，按路径中的飞书机器人 ID 选择目标机器人，并按 GitLab 钩子 ID 选择签名密钥，再转换成飞书 `post` 富文本通知。格式和测试以 GitLab 官方事件文档的完整 payload 为依据。
 
 ## 事件支持
 
@@ -43,7 +43,7 @@ Copy-Item .env.example .env
 python -m uvicorn app.main:app --env-file .env --reload --port 8000
 ```
 
-Webhook 地址为 `POST /webhook/gitlab/{bot_id}`，健康检查地址为 `GET /health`。`bot_id` 是飞书机器人 Webhook 地址最后的 UUID 部分。
+Webhook 地址为 `POST /webhook/gitlab/{bot_id}/{hook_id}`，健康检查地址为 `GET /health`。`bot_id` 是飞书机器人 Webhook 地址最后的 UUID 部分；`hook_id` 是服务端配置的非秘密标识，用来选择该 GitLab Webhook 对应的 Signing token。
 
 ## Docker 部署
 
@@ -58,12 +58,12 @@ Compose 支持在 `.env` 中填写 `GITLAB_WEBHOOK_IMAGE`。服务同时配置�
 在 GitLab 项目 Webhook、群组 Webhook 或 System Hook 中设置对应机器人的 URL，例如：
 
 ```text
-http://104.238.221.47:7001/webhook/gitlab/c33921dd-bd41-415a-b4cb-7b1339da8e86
+http://<server>:7001/webhook/gitlab/{bot_id}/{hook_id}
 ```
 
-将 `/hook/` 后的机器人 ID 替换为目标机器人的 ID。不同项目可以使用不同 ID 发往不同机器人；相同 ID 则共用一个机器人。GitLab Signing token 填入服务端 `GITLAB_SIGNING_TOKEN`；迁移期旧 Secret Token 可暂时保留在 GitLab 和服务端 `GITLAB_SECRET_TOKEN` 中。服务通过 `X-Gitlab-Event` 区分事件并验证来源。System Hook 也使用带机器人 ID 的统一路径。
+`bot_id` 替换为目标飞书机器人的 UUID。`hook_id` 为每个 GitLab Webhook 分配一个不同的标识，例如 `project-a`、`system-hook`；项目钩子、群组钩子和 System Hook 都使用相同格式。GitLab Signing token 只保存在服务端 `GITLAB_SIGNING_TOKENS` 配置中，不放入 URL。服务通过 `X-Gitlab-Event` 区分事件，并使用 `hook_id` 对应的密钥验证签名。
 
-URL 中的机器人 ID 属于凭据信息，应限制 GitLab Webhook 配置和服务访问日志的查看权限。服务只接受 UUID 格式的 ID，并固定请求 `open.feishu.cn`，不会把请求路径当作任意目标 URL。若服务部署在使用 Lark 而非 Feishu 的租户环境，需要调整固定的机器人 Webhook 域名。
+飞书机器人 UUID 属于凭据信息，应限制 GitLab Webhook 配置和服务访问日志的查看权限。`hook_id` 本身不是密钥，但建议使用不含项目敏感信息的标识。服务只接受 UUID 格式的机器人 ID，并固定请求 `open.feishu.cn`，不会把请求路径当作任意目标 URL。若服务部署在使用 Lark 而非 Feishu 的租户环境，需要调整固定的机器人 Webhook 域名。
 
 项目 Webhook 提供完整的 Push/MR/CI 等事件。System Hook 的 `repository_update` 主要提供仓库引用变化，无法直接还原提交正文。两者同时订阅可能产生两条不同类型的通知。
 
@@ -71,18 +71,24 @@ URL 中的机器人 ID 属于凭据信息，应限制 GitLab Webhook 配置和�
 
 ## 配置
 
-完整配置见 `.env.example`。GitLab 请求优先通过 `GITLAB_SIGNING_TOKEN` 验证；`GITLAB_WEBHOOK_TOLERANCE_SECONDS` 默认限制签名时间在当前时间前后 300 秒内。`GITLAB_SECRET_TOKEN` 仅用于无签名头时的迁移回退。无需设置 `FEISHU_WEBHOOK_URL`，目标 URL 会根据请求路径中的机器人 ID 拼接。`FEISHU_RETRY_COUNT=3` 表示首次发送失败后再重试 3 次。`FEISHU_SECRET` 可留空；配置后会附加飞书机器人签名。
+完整配置见 `.env.example`。`GITLAB_SIGNING_TOKENS` 是 JSON 对象，键为 URL 中的 `hook_id`，值为该 GitLab Webhook 的完整 Signing token。例如：
+
+```dotenv
+GITLAB_SIGNING_TOKENS={"project-a":"whsec_<project-a-token>","system-hook":"whsec_<system-token>"}
+```
+
+每个 GitLab 项目或 System Hook 都可以使用独立 token。`GITLAB_WEBHOOK_TOLERANCE_SECONDS` 默认限制签名时间在当前时间前后 300 秒内。服务只接受签名验证通过的请求；没有签名头、签名错误或使用未知 `hook_id` 都不会发送飞书消息。旧的 `GITLAB_SECRET_TOKEN` 不再用于认证。无需设置 `FEISHU_WEBHOOK_URL`，目标 URL 会根据请求路径中的机器人 ID 拼接。`FEISHU_RETRY_COUNT=3` 表示首次发送失败后再重试 3 次。`FEISHU_SECRET` 可留空；配置后会附加飞书机器人签名。
 
 ### 切换到 GitLab 签名令牌
 
 GitLab 签名令牌和飞书机器人签名是两套不同的机制。GitLab 签名验证发生在中转服务收到请求时；飞书签名发生在中转服务向飞书发送消息时。
 
-1. 在 GitLab Webhook 设置中生成 Signing token，将完整的 `whsec_...` 值填入服务端 `.env` 的 `GITLAB_SIGNING_TOKEN`。
-2. 迁移期间，在 GitLab Webhook 设置中同时保留旧 Secret Token；服务检测到 `webhook-signature` 时必须验证签名，签名错误不会回退到旧令牌。没有签名头时才使用 `X-Gitlab-Token` 回退校验。
+1. 为 GitLab Webhook 生成 Signing token，为该 Webhook 分配一个 `hook_id`，并将其放入完整 URL，例如 `/webhook/gitlab/{bot_id}/project-a`。
+2. 将该 `hook_id` 和完整的 `whsec_...` 值加入服务端 `.env` 的 `GITLAB_SIGNING_TOKENS` JSON 对象。不同 Webhook 使用不同的键和值。
 3. 重建服务并使用 GitLab 的测试投递确认请求成功。签名覆盖 `webhook-id.webhook-timestamp.原始请求体`；中转服务校验 HMAC-SHA256、原始字节和时间窗口，并使用常量时间比较。
-4. 确认签名投递成功后，在 GitLab 删除旧 Secret Token，再从服务端 `.env` 删除 `GITLAB_SECRET_TOKEN` 并重建。此后没有有效签名的请求会被拒绝。
+4. GitLab 的旧 Secret Token 不参与认证，可以从 GitLab 配置中删除。此服务不会接受没有有效签名的请求。
 
-如果 GitLab signing token 已配置而服务端尚未配置，带签名的请求会返回 401。若两种服务端令牌都未配置，端点返回 503，不会接受未认证请求。
+若 `hook_id` 尚未在服务端配置，请求返回 404；若缺少签名或验签失败，请求返回 401。
 
 ## 系统钩子
 

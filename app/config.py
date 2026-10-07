@@ -17,7 +17,6 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     gitlab_secret_token: str = os.getenv("GITLAB_SECRET_TOKEN", "")
-    feishu_webhook_url: str = os.getenv("FEISHU_WEBHOOK_URL", "")
     feishu_secret: str = os.getenv("FEISHU_SECRET", "")
     feishu_timeout: float = float(os.getenv("FEISHU_TIMEOUT", "10"))
     feishu_retry_count: int = _int("FEISHU_RETRY_COUNT", 3)

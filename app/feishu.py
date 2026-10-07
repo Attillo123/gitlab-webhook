@@ -5,6 +5,7 @@ import base64
 import hashlib
 import hmac
 import time
+import uuid
 from typing import Any
 
 import httpx
@@ -14,14 +15,23 @@ class FeishuDeliveryError(RuntimeError):
     pass
 
 
+def webhook_url(bot_id: str) -> str:
+    try:
+        parsed = uuid.UUID(bot_id)
+    except (ValueError, AttributeError) as exc:
+        raise FeishuDeliveryError("Invalid Feishu bot ID; expected a UUID") from exc
+    if str(parsed) != bot_id.lower():
+        raise FeishuDeliveryError("Invalid Feishu bot ID; expected a UUID")
+    return f"https://open.feishu.cn/open-apis/bot/v2/hook/{parsed}"
+
+
 def signature(timestamp: str, secret: str) -> str:
     digest = hmac.new(secret.encode(), f"{timestamp}\n{secret}".encode(), hashlib.sha256).digest()
     return base64.b64encode(digest).decode()
 
 
-async def send_to_feishu(payload: dict[str, Any], url: str, secret: str, timeout: float, retries: int, backoff: float) -> dict[str, Any]:
-    if not url:
-        raise FeishuDeliveryError("FEISHU_WEBHOOK_URL is not configured")
+async def send_to_feishu(payload: dict[str, Any], bot_id: str, secret: str, timeout: float, retries: int, backoff: float) -> dict[str, Any]:
+    url = webhook_url(bot_id)
     last_error: Exception | None = None
     async with httpx.AsyncClient(timeout=timeout) as client:
         for attempt in range(retries + 1):

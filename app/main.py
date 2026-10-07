@@ -50,8 +50,14 @@ async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/webhook/gitlab")
-async def gitlab_webhook(request: Request) -> dict[str, Any]:
+@app.post("/webhook/gitlab/{bot_id}")
+async def gitlab_webhook(bot_id: str, request: Request) -> dict[str, Any]:
+    from .feishu import webhook_url
+
+    try:
+        webhook_url(bot_id)
+    except FeishuDeliveryError as exc:
+        raise HTTPException(status_code=400, detail="Invalid Feishu bot ID; expected a UUID") from exc
     raw = await request.body()
     try:
         payload = json.loads(raw or b"{}")
@@ -73,7 +79,7 @@ async def gitlab_webhook(request: Request) -> dict[str, Any]:
     message = format_event(event, settings.max_message_length)
     logger.info("received event=%s kind=%s project=%s event_id=%s", header, event.kind, event.project_label, event_id)
     try:
-        result = await send_to_feishu(message, settings.feishu_webhook_url, settings.feishu_secret, settings.feishu_timeout, settings.feishu_retry_count, settings.feishu_retry_backoff)
+        result = await send_to_feishu(message, bot_id, settings.feishu_secret, settings.feishu_timeout, settings.feishu_retry_count, settings.feishu_retry_backoff)
     except FeishuDeliveryError as exc:
         # Let GitLab retry a failed delivery instead of suppressing it as a duplicate.
         dedupe.discard(event_id)

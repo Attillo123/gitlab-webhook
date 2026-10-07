@@ -1,6 +1,6 @@
 # GitLab → 飞书 Webhook 中转服务
 
-这是一个使用 FastAPI 编写的 GitLab Webhook 中转服务。多个项目或群组可共用 `POST /webhook/gitlab`，转换成飞书机器人 `post` 富文本通知。格式和测试以 [GitLab 官方事件文档](https://docs.gitlab.com/user/project/integrations/webhook_events/) 的完整 payload 为依据。
+这是一个使用 FastAPI 编写的 GitLab Webhook 中转服务。多个项目或群组可共用 `POST /webhook/gitlab/{bot_id}`，按路径中的飞书机器人 ID 选择目标机器人，再转换成飞书 `post` 富文本通知。格式和测试以 GitLab 官方事件文档的完整 payload 为依据。
 
 ## 事件支持
 
@@ -43,7 +43,7 @@ Copy-Item .env.example .env
 python -m uvicorn app.main:app --env-file .env --reload --port 8000
 ```
 
-Webhook 地址为 `POST /webhook/gitlab`，健康检查地址为 `GET /health`。
+Webhook 地址为 `POST /webhook/gitlab/{bot_id}`，健康检查地址为 `GET /health`。`bot_id` 是飞书机器人 Webhook 地址最后的 UUID 部分。
 
 ## Docker 部署
 
@@ -53,7 +53,15 @@ Copy-Item .env.example .env
 docker compose up -d --build
 ```
 
-在 GitLab 中将 Webhook URL 设置为 `https://your-host/webhook/gitlab`，Secret Token 设置为 `GITLAB_SECRET_TOKEN`。建议开启需要的 Project Webhook 事件和 System Hook。服务通过 `X-Gitlab-Event` 区分事件，通过 `X-Gitlab-Token` 校验来源。
+在 GitLab 项目 Webhook、群组 Webhook 或 System Hook 中设置对应机器人的 URL，例如：
+
+```text
+http://104.238.221.47:7001/webhook/gitlab/c33921dd-bd41-415a-b4cb-7b1339da8e86
+```
+
+将 `/hook/` 后的机器人 ID 替换为目标机器人的 ID。不同项目可以使用不同 ID 发往不同机器人；相同 ID 则共用一个机器人。Secret Token 设置为 `GITLAB_SECRET_TOKEN`。服务通过 `X-Gitlab-Event` 区分事件，通过 `X-Gitlab-Token` 校验来源。System Hook 也使用带机器人 ID 的统一路径。
+
+URL 中的机器人 ID 属于凭据信息，应限制 GitLab Webhook 配置和服务访问日志的查看权限。服务只接受 UUID 格式的 ID，并固定请求 `open.feishu.cn`，不会把请求路径当作任意目标 URL。若服务部署在使用 Lark 而非 Feishu 的租户环境，需要调整固定的机器人 Webhook 域名。
 
 项目 Webhook 提供完整的 Push/MR/CI 等事件。System Hook 的 `repository_update` 主要提供仓库引用变化，无法直接还原提交正文。两者同时订阅可能产生两条不同类型的通知。
 
@@ -61,7 +69,7 @@ docker compose up -d --build
 
 ## 配置
 
-完整配置见 `.env.example`。`FEISHU_RETRY_COUNT=3` 表示首次发送失败后再重试 3 次。飞书签名密钥为空时不附加签名字段；配置后会按照飞书机器人签名算法计算 `timestamp` 和 `sign`。
+完整配置见 `.env.example`。无需设置 `FEISHU_WEBHOOK_URL`，目标 URL 会根据请求路径中的机器人 ID 拼接。`FEISHU_RETRY_COUNT=3` 表示首次发送失败后再重试 3 次。`FEISHU_SECRET` 可留空；配置后会附加机器人签名。
 
 ## 系统钩子
 

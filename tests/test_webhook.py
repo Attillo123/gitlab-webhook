@@ -7,22 +7,24 @@ import httpx
 import pytest
 
 from app import main
-from app.feishu import FeishuDeliveryError
+from app.feishu import FeishuDeliveryError, webhook_url
 
+BOT_A = "c33921dd-bd41-415a-b4cb-7b1339da8e86"
+BOT_B = "6e6eeb35-8474-42f8-bdb1-6c74b212d50c"
 
 SAMPLES = json.loads((Path(__file__).parent / "fixtures" / "official_events.json").read_text(encoding="utf-8"))["samples"]
 
 
-def post(payload, headers=None):
+def post(payload, headers=None, bot_id=BOT_A):
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
-            return await client.post("/webhook/gitlab", json=payload, headers=headers or {})
+            return await client.post(f"/webhook/gitlab/{bot_id}", json=payload, headers=headers or {})
     return asyncio.run(request())
 
 
 @pytest.fixture(autouse=True)
 def isolated_service(monkeypatch):
-    monkeypatch.setattr(main, "settings", replace(main.settings, gitlab_secret_token="test-secret", feishu_webhook_url="https://example.com/hook"))
+    monkeypatch.setattr(main, "settings", replace(main.settings, gitlab_secret_token="test-secret"))
     monkeypatch.setattr(main, "dedupe", main.DedupeCache(60))
 
 
@@ -132,3 +134,41 @@ def test_system_event_requires_authentication(monkeypatch):
     monkeypatch.setattr(main, "send_to_feishu", never_send)
     response = post({"event_name": "user_create"}, {"X-Gitlab-Event": "System Hook", "X-Gitlab-Token": "wrong"})
     assert response.status_code == 401
+
+
+def test_bot_id_is_required():
+    async def request():
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
+            return await client.post("/webhook/gitlab", json={}, headers={"X-Gitlab-Token": "test-secret"})
+    response = asyncio.run(request())
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize("bot_id", ["not-a-uuid", "https://attacker.example", "", "c33921dd-bd41-415a-b4cb-7b1339da8e86/extra"])
+def test_invalid_bot_id_is_rejected(bot_id):
+    async def request():
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
+            return await client.post(f"/webhook/gitlab/{bot_id}", json={}, headers={"X-Gitlab-Token": "test-secret"})
+    response = asyncio.run(request())
+    assert response.status_code in {400, 404}
+
+
+def test_bot_id_constructs_only_fixed_feishu_host():
+    assert webhook_url(BOT_A) == f"https://open.feishu.cn/open-apis/bot/v2/hook/{BOT_A}"
+    with pytest.raises(FeishuDeliveryError):
+        webhook_url("https://attacker.example/hook")
+
+
+def test_different_path_ids_select_different_feishu_bots(monkeypatch):
+    selected = []
+    async def send(message, bot_id, *args):
+        selected.append(bot_id)
+        return {"code": 0}
+    monkeypatch.setattr(main, "send_to_feishu", send)
+    async def request():
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
+            for bot_id in (BOT_A, BOT_B):
+                response = await client.post(f"/webhook/gitlab/{bot_id}", json={"object_kind": "push"}, headers={"X-Gitlab-Token": "test-secret", "Idempotency-Key": bot_id})
+                assert response.status_code == 200
+    asyncio.run(request())
+    assert selected == [BOT_A, BOT_B]

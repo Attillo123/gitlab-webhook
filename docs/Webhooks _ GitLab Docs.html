@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#signing-tokens -->
+<html lang="en-us" dir="ltr" class="gl-light fixed" style="--banner-scroll-offset: 165px;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://docs.gitlab.com/19.3/","name":"GitLab Docs","position":1},{"@type":"ListItem","item":"https://docs.gitlab.com/19.3/api/","name":"Extend","position":2},{"@type":"ListItem","item":"https://docs.gitlab.com/19.3/user/project/integrations/webhooks/","name":"Webhooks","position":3}]}
+</script>
+
+  
+<meta name="viewport" content="width=device-width">
+
+<title>Webhooks | GitLab Docs</title>
+
+<link rel="icon" href="https://docs.gitlab.com/19.3/favicon.ico" sizes="any">
+<link rel="icon" href="https://docs.gitlab.com/19.3/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="https://docs.gitlab.com/19.3/apple-touch-icon.png">
+<link rel="manifest" href="https://docs.gitlab.com/19.3/manifests/manifest.webmanifest">
+<meta name="theme-color" content="#FC6D26">
+
+
+<link rel="canonical" href="https://docs.gitlab.com/user/project/integrations/webhooks/">
+
+<link rel="alternate" hreflang="en-us" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/"><link rel="alternate" hreflang="x-default" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/">
+
+
+  <meta name="description" content="Configure and manage project and group webhooks in GitLab.">
+
+
+<meta property="og:site_name" content="GitLab Docs">
+
+
+
+
+
+
+
+
+<link rel="preload" href="https://docs.gitlab.com/19.3/gitlab_ui/fonts/GitLabSans.woff2" type="font/woff2" as="font" crossorigin="">
+<link rel="prefetch" href="https://docs.gitlab.com/19.3/gitlab_ui/fonts/GitLabSans-Italic.woff2" crossorigin="">
+<link rel="prefetch" href="https://docs.gitlab.com/19.3/gitlab_ui/fonts/GitLabMono.woff2" crossorigin="">
+<link rel="stylesheet" href="./Webhooks _ GitLab Docs_files/index.css">
+
+
+<link rel="stylesheet" href="./Webhooks _ GitLab Docs_files/main.css">
+
+
+
+
+<link rel="stylesheet" href="./Webhooks _ GitLab Docs_files/syntax-dark.min.css" id="syntax-dark-theme" disabled="">
+<link rel="stylesheet" href="./Webhooks _ GitLab Docs_files/syntax-light.min.css" id="syntax-light-theme">
+
+
+<script>
+  (function() {
+    const THEME_STORAGE_KEY = 'gitlab-docs-theme';
+    const LAYOUT_STORAGE_KEY = 'gitlab-docs-layout';
+    const THEMES = { LIGHT: 'light', DARK: 'dark', AUTO: 'auto' };
+    const LAYOUTS = { FIXED: 'fixed', FLUID: 'fluid' };
+    const DEFAULT_THEME = 'light';
+    const DEFAULT_LAYOUT = 'fixed';
+    let is_auto = false;
+
+    const storedTheme = localStorage?.getItem(THEME_STORAGE_KEY);
+    const storedLayout = localStorage?.getItem(LAYOUT_STORAGE_KEY);
+    const systemPreference = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? THEMES.DARK : THEMES.LIGHT;
+
+    function determineTheme() {
+      if (storedTheme && (storedTheme === THEMES.LIGHT || storedTheme === THEMES.DARK)) {
+        return storedTheme;
+      }
+      if (storedTheme === THEMES.AUTO) {
+        is_auto = true;
+      }
+      if (systemPreference) {
+        return systemPreference;
+      }
+      return DEFAULT_THEME;
+    }
+
+    function determineLayout() {
+      return storedLayout === LAYOUTS.FLUID ? LAYOUTS.FLUID : DEFAULT_LAYOUT;
+    }
+
+    
+    const theme = determineTheme();
+    const layout = determineLayout();
+    const html = document.documentElement;
+
+    html.classList.remove('gl-dark', 'gl-light');
+    html.classList.add(theme === THEMES.DARK ? 'gl-dark' : 'gl-light');
+
+    
+    if (layout === LAYOUTS.FLUID) {
+      html.classList.add('fluid');
+      html.classList.remove('fixed');
+    }
+
+    
+    const darkStylesheet = document.getElementById('syntax-dark-theme');
+    const lightStylesheet = document.getElementById('syntax-light-theme');
+
+    if (darkStylesheet && lightStylesheet) {
+      if (theme === THEMES.DARK) {
+        darkStylesheet.disabled = false;
+        lightStylesheet.disabled = true;
+      } else {
+        darkStylesheet.disabled = true;
+        lightStylesheet.disabled = false;
+      }
+    }
+    
+    window.__initialTheme = is_auto ? THEMES.AUTO : theme;
+    window.__initialLayout = layout;
+  })();
+</script>
+
+
+
+<meta name="gitlab_docs_base_url" content="/19.3/">
+<meta name="gitlab_docs_page_owner" data-stage="Create" data-group="Import">
+<meta class="elastic" name="gitlab_docs_version" content="19.3">
+<meta class="elastic" name="gitlab_docs_section" content="extend">
+<meta class="elastic" data-pagefind-meta="breadcrumbs[content]" name="gitlab_docs_breadcrumbs" content="Extend">
+
+
+
+<meta name="gitlab_docs_page_source" content="https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/project/integrations/webhooks.md">
+<meta name="gitlab_docs_web_ide_link" content="https://gitlab.com/-/ide/project/gitlab-org/gitlab/edit/master/-/doc/user/project/integrations/webhooks.md">
+
+<script>
+
+window.pageMetadata = {
+  trail: [{"path":"api/","title":"Extend"},{"path":"user/project/integrations/webhooks/","title":"Webhooks"}]
+};
+</script>
+
+
+<meta name="gitlab_docs_legacy_path" content="/ee/user/project/integrations/webhooks.html">
+<meta name="gitlab_docs_hugo_launch_version" content="17.9">
+
+
+
+  <link href="./Webhooks _ GitLab Docs_files/pagefind-ui.css" rel="stylesheet">
+  <script type="module" src="./Webhooks _ GitLab Docs_files/pagefind-ui.js.下载"></script>
+  <script type="module" src="./Webhooks _ GitLab Docs_files/pagefind_search.js.下载"></script>
+
+
+
+<script>
+  const FS_IDENTIFIER = 'AIzaSyCLdi3jHHjkmLji9D8uj_RNPMHcdrYoIW4';
+  const RECAPTCHA_PUBLIC_KEY = '6Le4R3UrAAAAALsIlK_siq0_UhPD-0rD-ImF1gfO';
+</script>
+
+
+<meta name="zd-site-verification" content="ony3w7hk1vs6tfyrc51mld">
+
+<meta name="zd-site-verification" content="gtuq65qdzt6n31viazi6hj">
+
+  
+  <link rel="stylesheet" href="./Webhooks _ GitLab Docs_files/page_content.css">
+ 
+<link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/docs_banner.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/i18n.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/cookies.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/dom.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/purify.es.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/_plugin-vue_export-helper.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/alert.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/tooltip.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/icon.js"><link rel="modulepreload" as="script" crossorigin="" href="https://docs.gitlab.com/19.3/assets/safe_html.js"></head><body class="has-archive-banner" data-elastic-exclude="">
+  
+    <nav data-ga-section="header" data-elastic-exclude="">
+      
+
+
+<div class="header-wrapper gl-w-full gl-fixed gl-z-4">
+  <div class="header">
+  <div class="header-top gl-flex gl-items-center">
+    
+    <a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#skipTarget" class="gl-sr-only skip-link">Skip to main content</a>
+    
+    <a class="navbar-logo" href="https://docs.gitlab.com/19.3/"><span class="gl-sr-only">Go to GitLab Docs homepage</span></a>
+    <div class="mobile-header gl-w-full gl-text-base ">
+      <div class="mobile-header-overlay"></div>
+      <div class="header-right collapse gl-z-4 gl-border-t lg:gl-border-0">
+        <div class="search-wrapper lg:gl-ml-4 lg:gl-grow ">
+        
+          
+            
+            <div class="js-pagefind-search-form gl-spinner-container" data-search-kbd="" data-v-app=""><div class="search-container"><div class="search-form-wrapper gl-text-base"><form class="gl-relative"><div class="gl-search-box-by-type"><svg class="gl-icon s16 gl-fill-icon-subtle gl-search-box-by-type-search-icon" data-testid="search-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#search"></use></svg><input class="gl-form-input form-control gl-search-box-by-type-input" type="search" placeholder="Search topics, API and CI/CD reference" autocomplete="off" role="searchbox" aria-label="Search" value="" id="gl-form-input-31" _mstplaceholder="918866" _mstaria-label="74607"><!----></div><kbd class="gl-absolute gl-z-1" title="Use the shortcut keys&lt;br&gt;&lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;s&lt;/kbd&gt; to start a search">/</kbd></form><!----></div><!----></div></div>
+          
+        
+        </div>
+        <div class="gl-flex gl-flex-col gl-gap-3 gl-mt-5 lg:gl-mt-0 lg:gl-flex-row lg:gl-items-center gl-ml-auto">
+          <a class="whats-new gl-button btn-default btn-default-tertiary gl-hidden lg:gl-block" href="https://about.gitlab.com/releases/whats-new/" target="_blank" rel="noopener noreferrer">
+            What's new?
+          </a>
+          <div class="header-menus gl-flex gl-gap-3 gl-flex-col lg:gl-flex-row">
+            
+            
+              <div data-vue-app="versions-menu" data-v-app=""><div class="gl-new-dropdown gl-disclosure-dropdown versions-menu gl-flex" data-testid="versions-menu"><button aria-controls="base-dropdown-30" aria-expanded="false" id="dropdown-toggle-btn-28" data-testid="base-dropdown-toggle" type="button" class="btn gl-button btn-default btn-md gl-new-dropdown-toggle"><!----><!----><span class="gl-button-text"><span class="gl-new-dropdown-button-text" data-testid="base-dropdown-span">v19.3</span><svg class="gl-icon s16 gl-fill-current gl-button-icon gl-new-dropdown-chevron" data-testid="chevron-down-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#chevron-down"></use></svg><!----></span></button><div class="gl-new-dropdown-container"><div id="base-dropdown-30" data-testid="base-dropdown-menu" class="gl-new-dropdown-panel !gl-w-31"><div class="gl-new-dropdown-arrow"></div><div class="gl-new-dropdown-inner"><ul id="disclosure-29" aria-labelledby="dropdown-toggle-btn-28" data-testid="disclosure-content" class="gl-new-dropdown-contents" tabindex="-1"><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://docs.gitlab.com/user/project/integrations/webhooks/#signing-tokens" data-testid="next-version" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 19.5 (Upcoming release)</font></span></a></li></ul></li><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://docs.gitlab.com/19.4/user/project/integrations/webhooks/#signing-tokens" data-testid="current-version" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 19.4 (Current release)</font></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://archives.docs.gitlab.com/19.3/user/project/integrations/webhooks/#signing-tokens" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 19.3</font></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://archives.docs.gitlab.com/19.2/user/project/integrations/webhooks/#signing-tokens" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 19.2</font></span></a></li></ul></li><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://archives.docs.gitlab.com/18.11/user/project/integrations/webhooks/#signing-tokens" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 18.11</font></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://archives.docs.gitlab.com/17.11/user/project/integrations/webhooks/#signing-tokens" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> 17.11</font></span></a></li></ul></li><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://docs.gitlab.com/archives" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----><font _mstmutation="1"> Archives</font></span></a></li></ul></li></ul></div></div></div></div></div>
+            
+            <div data-vue-app="appearance-toggle" data-v-app=""><div class="gl-new-dropdown appearance-toggle gl-flex gl-mt-3 lg:gl-my-0" title="Select theme and layout"><button role="combobox" aria-controls="base-dropdown-20" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="dropdown-toggle-btn-19" data-testid="base-dropdown-toggle" type="button" class="btn gl-button btn-default btn-md gl-new-dropdown-toggle gl-new-dropdown-icon-only btn-icon"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="appearance-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#appearance"></use></svg><span class="gl-button-text"><span id="dropdown-toggle-btn-19" class="gl-new-dropdown-button-text gl-sr-only" data-testid="base-dropdown-span">Select theme and layout</span><svg class="gl-icon s16 gl-fill-current gl-button-icon gl-new-dropdown-chevron" data-testid="chevron-down-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#chevron-down"></use></svg><!----></span></button><div class="gl-new-dropdown-container"><div id="base-dropdown-20" data-testid="base-dropdown-menu" class="gl-new-dropdown-panel !gl-w-31"><div class="gl-new-dropdown-arrow"></div><div class="gl-new-dropdown-inner"><!----><!----><div id="listbox-17" aria-labelledby="dropdown-toggle-btn-19" aria-multiselectable="true" role="listbox" class="gl-new-dropdown-contents gl-new-dropdown-contents-with-scrim-overlay top-scrim-visible bottom-scrim-visible gl-new-dropdown-contents" tabindex="0"><div class="top-scrim-wrapper" aria-hidden="true" data-testid="top-scrim"><div class="top-scrim top-scrim-light"></div></div><div aria-hidden="true"></div><ul role="group" aria-labelledby="gl-listbox-group-21" class="gl-mb-0 gl-pl-0"><li id="gl-listbox-group-21" role="presentation" class="gl-pb-2 gl-pl-4 gl-pt-3 gl-text-sm gl-font-bold gl-text-strong"></li><li class="gl-new-dropdown-item" role="option" tabindex="-1" aria-selected="true" id="listbox-item-22" data-testid="listbox-item-light"><span class="gl-new-dropdown-item-content"><svg class="gl-icon s16 gl-fill-current gl-new-dropdown-item-check-icon gl-mt-3 gl-self-start" data-testid="dropdown-item-checkbox" role="img" aria-hidden="true"><use href="/19.3/icons.svg#check"></use></svg><span class="gl-new-dropdown-item-text-wrapper"><font _mstmutation="1">Light mode</font></span></span></li><li class="gl-new-dropdown-item" role="option" tabindex="-1" id="listbox-item-23" data-testid="listbox-item-dark"><span class="gl-new-dropdown-item-content"><svg class="gl-icon s16 gl-fill-current gl-new-dropdown-item-check-icon gl-invisible gl-mt-3 gl-self-start" data-testid="dropdown-item-checkbox" role="img" aria-hidden="true"><use href="/19.3/icons.svg#check"></use></svg><span class="gl-new-dropdown-item-text-wrapper"><font _mstmutation="1">Dark mode</font></span></span></li><li class="gl-new-dropdown-item" role="option" tabindex="-1" id="listbox-item-24" data-testid="listbox-item-auto"><span class="gl-new-dropdown-item-content"><svg class="gl-icon s16 gl-fill-current gl-new-dropdown-item-check-icon gl-invisible gl-mt-3 gl-self-start" data-testid="dropdown-item-checkbox" role="img" aria-hidden="true"><use href="/19.3/icons.svg#check"></use></svg><span class="gl-new-dropdown-item-text-wrapper"><font _mstmutation="1">Auto</font></span></span></li></ul><ul role="group" aria-labelledby="gl-listbox-group-25" class="gl-mb-0 gl-pl-0 gl-border-t-1 gl-border-t-solid gl-border-t-dropdown-divider gl-pt-1 gl-mt-2"><li id="gl-listbox-group-25" role="presentation" class="gl-pb-2 gl-pl-4 gl-pt-3 gl-text-sm gl-font-bold gl-text-strong"></li><li class="gl-new-dropdown-item" role="option" tabindex="-1" aria-selected="true" id="listbox-item-26" data-testid="listbox-item-fixed"><span class="gl-new-dropdown-item-content"><svg class="gl-icon s16 gl-fill-current gl-new-dropdown-item-check-icon gl-mt-3 gl-self-start" data-testid="dropdown-item-checkbox" role="img" aria-hidden="true"><use href="/19.3/icons.svg#check"></use></svg><span class="gl-new-dropdown-item-text-wrapper"><font _mstmutation="1">Fixed width</font></span></span></li><li class="gl-new-dropdown-item" role="option" tabindex="-1" id="listbox-item-27" data-testid="listbox-item-fluid"><span class="gl-new-dropdown-item-content"><svg class="gl-icon s16 gl-fill-current gl-new-dropdown-item-check-icon gl-invisible gl-mt-3 gl-self-start" data-testid="dropdown-item-checkbox" role="img" aria-hidden="true"><use href="/19.3/icons.svg#check"></use></svg><span class="gl-new-dropdown-item-text-wrapper"><font _mstmutation="1">Fluid width</font></span></span></li></ul><!----><!----><div aria-hidden="true"></div><div class="bottom-scrim-wrapper" aria-hidden="true" data-testid="bottom-scrim"><div class="bottom-scrim"></div></div></div><!----><!----></div></div></div></div></div>
+          </div>
+
+          <div class="gl-flex gl-justify-evenly lg:gl-justify-normal gl-items-center gl-gap-5">
+            <a class="whats-new gl-button btn-default btn-default-tertiary gl-w-full lg:gl-hidden  hover:gl-no-underline" href="https://about.gitlab.com/releases/whats-new/" target="_blank" rel="noopener noreferrer">What's new?</a>
+            
+              
+                
+              
+              <a class="free-trial-btn cta-button gl-button btn-confirm gl-w-full hover:gl-no-underline" href="https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&amp;amp;glm_content=navigation-cta-docs" target="_blank" rel="noopener noreferrer" role="button">
+                Get free trial
+              </a>
+            </div>
+          </div>
+      </div>
+    </div>
+    <button class="navbar-toggle gl-button btn-default lg:gl-hidden" data-toggle="collapse" data-target=".header-right">
+      <span class="navbar-toggle-icon"></span>
+      <span class="gl-sr-only">Toggle menu</span>
+    </button>
+  </div>
+  
+    <div class="header-bottom gl-border-t lg:gl-border-b">
+
+
+
+
+  
+  
+    
+  
+
+
+
+
+
+
+
+  
+
+
+<ul class="subheader-menu gl-hidden lg:gl-flex gl-list-none gl-text-base gl-space-x-5 gl-py-4 gl-pl-0 gl-mb-0">
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/user/" class="">Use GitLab</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/user/gitlab_duo/" class="">GitLab Duo</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/orbit/" class="">GitLab Orbit</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/api/" class="active">Extend</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/install/" class="">Install</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/administration/" class="">Administer</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/subscriptions/" class="">Subscribe</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/development/" class="">Contribute</a>
+  </li>
+  
+  <li>
+    
+    
+    <a href="https://docs.gitlab.com/19.3/solutions/" class="">Solutions</a>
+  </li>
+  
+</ul>
+</div>
+  
+  </div>
+</div>
+
+    </nav>
+  
+  <main data-ga-section="content-body">
+    
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"TechArticle","author":{"@type":"Organization","name":"GitLab"},"description":"Configure and manage project and group webhooks in GitLab.","headline":"Webhooks","inLanguage":"en-US","publisher":{"@type":"Organization","name":"GitLab Docs"}}
+  </script>
+
+
+    
+  <div data-vue-app="version-banner" class="gl-sticky gl-z-2 archive-banner" data-v-app=""><div role="status" aria-live="polite" class="gl-alert gl-alert-not-dismissible gl-alert-tip gl-docs gl-text-lg gl-text-center gl-py-3" tabindex="-1"><div class="gl-alert-icon-container"><svg class="gl-icon s16 gl-fill-current gl-alert-icon" data-testid="bulb-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#bulb"></use></svg></div><div class="gl-alert-content"><!----><div class="gl-alert-body"><div class="gl-layout-w-limited gl-m-auto gl-leading-none">This is <a href="https://docs.gitlab.com/archives">archived documentation</a> for GitLab. Go to <a href="https://docs.gitlab.com/user/project/integrations/webhooks/">the latest</a>.</div></div><!----></div><!----></div></div>
+<div class="template-single gl-flex gl-h-full">
+  <div data-vue-app="sidebar-menu" data-ga-section="side-nav" class="sidebar-container" data-v-app=""><div class="gl-pt-6"><!----><aside class="global-nav-wrapper" aria-label="Main Navigation" _mstaria-label="255502"><div class="global-nav"><div class="gl-flex gl-gap-4 gl-p-4 lg:gl-hidden"><button aria-label="Toggle sidebar" data-testid="sidebar-toggle-btn-inner" role="button" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary btn-icon sidebar-toggle" _mstaria-label="227396"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="sidebar-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#sidebar"></use></svg><!----></button><label for="topics" class="gl-sr-only">Select a topic</label><span class="gl-form-select-wrapper topics"><select class="custom-select gl-form-select" id="topics" name="topics"><!----><option value="Use GitLab">Use GitLab</option><option value="GitLab Duo">GitLab Duo</option><option value="GitLab Orbit">GitLab Orbit</option><option value="Extend">Extend</option><option value="Install">Install</option><option value="Administer">Administer</option><option value="Subscribe">Subscribe</option><option value="Contribute">Contribute</option><option value="Solutions">Solutions</option></select></span></div><nav aria-label="Main" _mstaria-label="43680"><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/api/get_started/get_started_extending/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Getting started</a><!----></div></div><div name="submenu"><!----></div></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/tutorials/develop/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Tutorials</a><!----></div></div><div name="submenu"><!----></div></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/integration/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Integrations</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base sidebar-link-active-trail sidebar-link-active-item"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Webhooks</a><button aria-label="Collapse" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="113477"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-on gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><div class="submenu"><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhook_events/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Events</a><!----></div></div><div name="submenu"><!----></div></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/administration/raketasks/web_hooks/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Rake tasks</a><!----></div></div><div name="submenu"><!----></div></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks_troubleshooting/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Troubleshooting</a><!----></div></div><div name="submenu"><!----></div></div></div></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/api/rest/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">REST API</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/api/graphql/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">GraphQL API</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/api/oauth2/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">OAuth 2.0 identity provider API</a><!----></div></div><div name="submenu"><!----></div></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/user/model_context_protocol/mcp_server/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">GitLab MCP server</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/user/gitlab_duo_cli/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">GitLab Duo CLI (duo)</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/cli/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">GitLab CLI (glab)</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div><div><div class="menu-link-wrapper-outer"><div class="menu-link-wrapper-inner gl-flex gl-items-center gl-rounded-base"><a href="https://docs.gitlab.com/19.3/editor_extensions/" class="menu-link gl-grow gl-py-2 gl-px-4 gl-text-default gl-no-underline hover:gl-no-underline">Editor and IDE extensions</a><button aria-label="Expand" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary submenu-toggle btn-icon gl-mr-2" _mstaria-label="75803"><!----><!----><span class="gl-button-text"><svg class="gl-animated-icon gl-animated-icon-off gl-animated-icon-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="gl-animated-chevron-right-down-arrow" d="M6.75 4.75L10 8L6.75 11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><!----></span></button></div></div><transition name="submenu"><!----></transition></div></nav></div></aside></div></div><div data-pagefind-body="" class="main-content" data-pagefind-weight="2">
+    <div class="docs-content">
+      <div class="gl-flex gl-h-5 gl-items-center gl-my-6">
+        <div data-vue-app="open-sidebar" data-v-app=""><div class="open-sidebar gl-text-sm gl-min-w-9 lg:gl-hidden"><button aria-label="Toggle sidebar" data-testid="sidebar-toggle-btn-outer" type="button" class="btn gl-button btn-default btn-sm btn-default-tertiary btn-icon sidebar-toggle-outer" _mstaria-label="227396"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="sidebar-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#sidebar"></use></svg><!----></button><span class="gl-text-subtle gl-px-2">&nbsp;/&nbsp;</span></div></div> <div data-vue-app="breadcrumb-nav" data-v-app=""><nav class="gl-breadcrumbs gl-overflow-hidden gl-py-3" aria-label="Breadcrumb" style="--gl-breadcrumb-truncated-item-max-width: 71px;" _mstaria-label="154232"><ol class="gl-breadcrumb-list breadcrumb"><li class="gl-breadcrumb-item gl-breadcrumb-item-sm"><div class="gl-new-dropdown gl-disclosure-dropdown"><button aria-controls="base-dropdown-45" aria-expanded="false" id="dropdown-toggle-btn-43" data-testid="base-dropdown-toggle" type="button" class="btn gl-button btn-default btn-sm gl-new-dropdown-toggle button-ellipsis-horizontal gl-new-dropdown-toggle-no-caret"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="ellipsis_h-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#ellipsis_h"></use></svg><span class="gl-button-text"><span class="gl-new-dropdown-button-text gl-sr-only" data-testid="base-dropdown-span">Show more breadcrumbs</span><!----><!----></span></button><div class="gl-new-dropdown-container"><div id="base-dropdown-45" data-testid="base-dropdown-menu" class="gl-new-dropdown-panel gl-new-dropdown-panel-fluid-width"><div class="gl-new-dropdown-arrow"></div><div class="gl-new-dropdown-inner"><ul id="disclosure-44" aria-labelledby="dropdown-toggle-btn-43" data-testid="disclosure-content" class="gl-new-dropdown-contents" tabindex="-1"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://docs.gitlab.com/19.3/" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----> GitLab Docs</span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a href="https://docs.gitlab.com/19.3/api/" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><!----> Extend</span></a></li></ul></div></div></div></div></li><li class="gl-breadcrumb-item gl-breadcrumb-item-sm gl-breadcrumb-only-item"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/" class="" aria-current="page"><!----><span class="gl-align-middle">Webhook</span></a></li><!----></ol></nav></div>
+      </div>
+      
+      
+      <hr class="gl-border-t gl-px-5 lg:gl-hidden">
+      <div class="gl-pt-4 gl-mt-4 gl-mb-4 lg:gl-pt-0 lg:gl-mt-0 lg:gl-border-t-0">
+        
+
+
+  <h1 id="skipTarget" class="gl-mb-6">Webhooks</h1>
+
+
+      </div>
+
+      <div data-elastic-include="">
+      <div class="availability gl-pl-4 gl-pr-4"><ul class="gl-list-none gl-p-0 gl-m-0"><li>
+      <font _mstmutation="1"><span class="gl-font-bold" _mstmutation="1">Tier</span>: Free, Premium, Ultimate</font></li><li>
+      <font _mstmutation="1"><span class="gl-font-bold" _mstmutation="1">Offering</span>: GitLab.com, GitLab Self-Managed, GitLab Dedicated</font></li></ul>
+</div>
+
+<p>Webhooks connect GitLab to your other tools and systems through real-time notifications.
+When important events happen in GitLab, webhooks send that information directly to your external applications.
+Build automation workflows by reacting to merge requests, code pushes, and issue updates.</p>
+<p>With webhooks, your team stays synchronized as changes occur:</p>
+<ul>
+<li>External issue trackers update automatically when GitLab issues change.</li>
+<li>Chat applications notify team members about pipeline completions.</li>
+<li>Custom scripts deploy applications when code reaches the main branch.</li>
+<li>Monitoring systems track development activity across your entire organization.</li>
+</ul>
+<h2 id="webhook-events"><font _mstmutation="1">Webhook events</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-events" title="Permalink" class="anchor"></a></h2>
+<p>Various events in GitLab can trigger webhooks. For example:</p>
+<ul>
+<li>Pushing code to a repository.</li>
+<li>Posting a comment on an issue.</li>
+<li>Creating a merge request.</li>
+</ul>
+<h2 id="webhook-limits"><font _mstmutation="1">Webhook limits</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-limits" title="Permalink" class="anchor"></a></h2>
+<p>GitLab.com enforces <a href="https://docs.gitlab.com/19.3/user/gitlab_com/#webhooks">webhook limits</a>, including:</p>
+<ul>
+<li>Maximum number of webhooks per project or group.</li>
+<li>Number of webhook calls per minute.</li>
+<li>Webhook timeout duration.</li>
+</ul>
+<p>For GitLab Self-Managed, administrators can modify these limits.</p>
+<h3 id="push-event-limits"><font _mstmutation="1">Push event limits</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#push-event-limits" title="Permalink" class="anchor"></a></h3>
+<p>GitLab limits webhook triggers for push events that include multiple changes:</p>
+<ul>
+<li>Default limit: 3 branches or tags per push.</li>
+<li>Behavior when exceeded: No webhooks are triggered for the entire push event.</li>
+<li>Applies to: Both project webhooks and system hooks.</li>
+<li><font _mstmutation="1">Configuration: GitLab Self-Managed administrators can modify the 
+setting through the application settings API.</font><code>push_event_hooks_limit</code></li>
+</ul>
+<p>If you frequently push multiple tags or branches simultaneously and need webhook
+notifications, contact your GitLab administrator to increase this limit.</p>
+<h2 id="group-webhooks"><font _mstmutation="1">Group webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#group-webhooks" title="Permalink" class="anchor"></a></h2>
+<div class="availability gl-pl-4 gl-pr-4"><ul class="gl-list-none gl-p-0 gl-m-0"><li>
+      <font _mstmutation="1"><span class="gl-font-bold" _mstmutation="1">Tier</span>: Premium, Ultimate</font></li></ul>
+</div>
+
+<p>Group webhooks are custom HTTP callbacks that send notifications for events across all projects in a group and its subgroups.</p>
+<h3 id="types-of-group-webhook-events"><font _mstmutation="1">Types of group webhook events</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#types-of-group-webhook-events" title="Permalink" class="anchor"></a></h3>
+<p>You can configure group webhooks to listen for:</p>
+<ul>
+<li>All events that occur in projects in the group and subgroups</li>
+<li>Group-specific events, including group member events, project events, and subgroup events</li>
+</ul>
+<h3 id="webhooks-in-both-a-project-and-a-group"><font _mstmutation="1">Webhooks in both a project and a group</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhooks-in-both-a-project-and-a-group" title="Permalink" class="anchor"></a></h3>
+<p>If you configure identical webhooks in both a group and a project in that group,
+both webhooks are triggered for events in that project.
+This allows for flexible event handling at different levels of your GitLab organization.</p>
+<h2 id="configure-webhooks"><font _mstmutation="1">Configure webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-webhooks" title="Permalink" class="anchor"></a></h2>
+<p>Create and configure webhooks in GitLab to integrate with your project’s workflow.
+Use these features to set up webhooks that meet your specific requirements.</p>
+<h3 id="create-a-webhook"><font _mstmutation="1">Create a webhook</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#create-a-webhook" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-2" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-2" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-2" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><font _mstmutation="1"><strong _mstmutation="1">Signing token</strong> text box <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/19367" _mstmutation="1">introduced</a> in GitLab 19.0 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Enabled by default.</font><code>webhook_signing_token</code></li>
+<li><font _mstmutation="1">Feature flag  <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/596374" _mstmutation="1">removed</a> in GitLab 19.1.</font><code>webhook_signing_token</code></li>
+</ul>
+</div>
+</div>
+
+<p>For new webhooks, use a signing token instead of a secret token. The signing token computes
+an HMAC-SHA256 signature over the payload, so your endpoint can verify both the authenticity
+and integrity of the request. The secret token only provides a plain-text value in a header,
+which offers weaker guarantees. The secret token is not recommended for new webhooks.</p>
+<p>Create a webhook to send notifications about events in your project or group.</p>
+<p>Prerequisites:</p>
+<ul>
+<li>For project webhooks, you must have the Maintainer or Owner role for the project.</li>
+<li>For group webhooks, you must have the Owner role for the group.</li>
+</ul>
+<p>To create a webhook:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong>.</li>
+<li>Select <strong>Add new webhook</strong>.</li>
+<li>In <strong>URL</strong>, enter the URL of the webhook endpoint.
+Use percent-encoding for special characters.</li>
+<li>Optional. Enter a <strong>Name</strong> and <strong>Description</strong> for the webhook.</li>
+<li><font _mstmutation="1">Optional. Configure request authentication. Use a signing token for stronger security:
+</font><ul>
+<li><strong>Signing token</strong> (recommended): Select <strong>Generate signing token</strong>.
+Copy and save the token now because it is displayed only once.
+Your webhook endpoint can use this token to <a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#verify-the-signature">verify the HMAC-SHA256 signature</a>.</li>
+<li><font _mstmutation="1"><strong _mstmutation="1">Secret token</strong> (not recommended): Enter a token in the <strong _mstmutation="1">Secret token</strong> field.
+This token is sent as plain text in the  HTTP header and provides weaker
+security guarantees than a signing token. Use the signing token instead for new webhooks.</font><code>X-Gitlab-Token</code></li>
+</ul>
+</li>
+<li>In the <strong>Trigger</strong> section, select the events to trigger the webhook.</li>
+<li>Optional. To disable SSL verification, clear the <strong>Enable SSL verification</strong> checkbox.</li>
+<li>Select <strong>Add webhook</strong>.</li>
+</ol>
+<h3 id="signing-tokens"><font _mstmutation="1">Signing tokens</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#signing-tokens" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-3" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-3" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-3" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/19367" _mstmutation="1">Introduced</a> in GitLab 19.0 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Enabled by default.</font><code>webhook_signing_token</code></li>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/596374" _mstmutation="1">Generally available</a> in GitLab 19.1. Feature flag  removed.</font><code>webhook_signing_token</code></li>
+</ul>
+</div>
+</div>
+
+<p>Use a signing token to verify that webhook payloads originate from GitLab and have not been tampered with.
+Unlike the secret token, the signing token is
+used to compute an HMAC-SHA256 signature over the payload. This means recipients can independently verify
+both the authenticity and integrity of the received payload.</p>
+<p><font _mstmutation="1">GitLab webhook delivery follows the <a href="https://www.standardwebhooks.com/" _mstmutation="1">Standard Webhooks</a>
+specification. Every webhook request includes the  and  headers.
+When a signing token is configured, GitLab also includes the  header with the
+HMAC-SHA256 signature. Each signature has the format . The header may
+contain multiple space-separated signatures. GitLab currently sends one signature, but this
+may change in the future. The signature is computed over the string
+, where:</font><code>webhook-id</code><code>webhook-timestamp</code><code>webhook-signature</code><code>v1,{base64_signature}</code><code>{message_id}.{timestamp}.{body}</code></p>
+<ul>
+<li><code>{message_id}</code><font _mstmutation="1"> is the value of the  header.</font><code>webhook-id</code></li>
+<li><code>{timestamp}</code><font _mstmutation="1"> is the value of the  header.</font><code>webhook-timestamp</code></li>
+<li><code>{body}</code><font _mstmutation="1"> is the raw JSON request body.</font></li>
+</ul>
+<h4 id="verify-the-signature"><font _mstmutation="1">Verify the signature</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#verify-the-signature" title="Permalink" class="anchor"></a></h4>
+<p>To verify the signature in your webhook endpoint:</p>
+<ol>
+<li><font _mstmutation="1">Retrieve the , , and  header values.</font><code>webhook-id</code><code>webhook-timestamp</code><code>webhook-signature</code></li>
+<li><font _mstmutation="1">Split the  value on spaces to get the list of signatures.</font><code>webhook-signature</code></li>
+<li><font _mstmutation="1">Construct the message string: .</font><code>"{message_id}.{timestamp}.{body}"</code></li>
+<li><font _mstmutation="1">Decode the signing token: strip the  prefix, then base64-decode the remainder.</font><code>whsec_</code></li>
+<li>Compute the HMAC-SHA256 digest using the decoded key.</li>
+<li><font _mstmutation="1">Encode the digest as base64 and prefix with .</font><code>v1,</code></li>
+<li>Check whether the computed signature matches any entry in the signature list.
+Use a constant-time comparison to prevent timing attacks.</li>
+</ol>
+<p>Example in Ruby:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="ruby" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">ruby</font></span></span><button id="copyCodeblock-4647b7a7-8a1a-4d2b-aa03-272a8f709a4b" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="nb">require</span> <span class="s1">'base64'</span>
+</span></span><span class="line"><span class="cl"><span class="nb">require</span> <span class="s1">'openssl'</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">valid_signature?</span><span class="p">(</span><span class="n">signing_token</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">received_signatures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">raw_key</span> <span class="o">=</span> <span class="no">Base64</span><span class="o">.</span><span class="n">strict_decode64</span><span class="p">(</span><span class="n">signing_token</span><span class="o">.</span><span class="n">delete_prefix</span><span class="p">(</span><span class="s1">'whsec_'</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="n">message</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="n">body</span><span class="si">}</span><span class="s2">"</span>
+</span></span><span class="line"><span class="cl">  <span class="n">digest</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">HMAC</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="s1">'sha256'</span><span class="p">,</span> <span class="n">raw_key</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">expected</span> <span class="o">=</span> <span class="s2">"v1,</span><span class="si">#{</span><span class="no">Base64</span><span class="o">.</span><span class="n">strict_encode64</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+</span></span><span class="line"><span class="cl">  <span class="n">received_signatures</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span><span class="o">.</span><span class="n">any?</span> <span class="k">do</span> <span class="o">|</span><span class="n">sig</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">SecurityUtils</span><span class="o">.</span><span class="n">secure_compare</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">sig</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span></span></span></code></pre></div></div><p>Example in Python:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="python" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">python</font></span></span><button id="copyCodeblock-248868aa-011e-4f97-b460-3baa2c914ad4" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">hashlib</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">hmac</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">valid_signature</span><span class="p">(</span><span class="n">signing_token</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">received_signatures</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">raw_key</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">signing_token</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s1">'whsec_'</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">digest</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">raw_key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">expected</span> <span class="o">=</span> <span class="s2">"v1,"</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">sig</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">received_signatures</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span></span></span></code></pre></div></div><h4 id="backward-compatibility"><font _mstmutation="1">Backward compatibility</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#backward-compatibility" title="Permalink" class="anchor"></a></h4>
+<p>The signing token works alongside the existing secret token. You can configure both on the same webhook:</p>
+<ul>
+<li><font _mstmutation="1">The  header is still sent if a secret token is configured.</font><code>X-Gitlab-Token</code></li>
+<li><font _mstmutation="1">The  and  headers are sent if a signing token is configured.</font><code>webhook-signature</code><code>webhook-id</code></li>
+</ul>
+<p><font _mstmutation="1">To migrate an existing webhook using the secret token to a signing token without downtime, configure both tokens on the same
+webhook during the transition. Update your receiver to verify the signature when  is
+present and fall back to the secret token otherwise.</font><code>webhook-signature</code></p>
+<p>Once your receiver handles signatures correctly, you can remove the secret token from the webhook settings.</p>
+<h4 id="security-considerations"><font _mstmutation="1">Security considerations</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#security-considerations" title="Permalink" class="anchor"></a></h4>
+<p><font _mstmutation="1">To prevent replay attacks, validate that the timestamp in  is recent before processing the payload.</font><code>webhook-timestamp</code></p>
+<p>The signing token is never returned by the API.</p>
+<h3 id="mask-sensitive-portions-of-webhook-urls"><font _mstmutation="1">Mask sensitive portions of webhook URLs</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#mask-sensitive-portions-of-webhook-urls" title="Permalink" class="anchor"></a></h3>
+<p>Mask sensitive portions of webhook URLs to enhance security.
+Masked portions are replaced with configured values when webhooks are executed, are not logged, and
+are encrypted at rest in the database.</p>
+<p>To mask sensitive portions of a webhook URL:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong>.</li>
+<li>In <strong>URL</strong>, enter the full URL of the webhook.</li>
+<li>To define masked portions, select <strong>Add URL masking</strong>.</li>
+<li>In <strong>Sensitive portion of URL</strong>, enter the part of the URL you want to mask.</li>
+<li><font _mstmutation="1">In <strong _mstmutation="1">How it looks in the UI</strong>, enter the value to display instead of the masked portion.
+Variable names must contain only lowercase letters (), numbers (), or underscores ().</font><code>a-z</code><code>0-9</code><code>_</code></li>
+<li>Select <strong>Save changes</strong>.</li>
+</ol>
+<p><font _mstmutation="1">The masked values appear hidden in the UI.
+For example, if you’ve defined variables  and , the webhook URL can look like this:</font><code>path</code><code>value</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="plaintext" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><!----><button id="copyCodeblock-2426f4c0-8b6f-40ad-be02-c7e4440de00a" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-4 gl-right-4" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">https://webhook.example.com/{path}?key={value}</span></span></code></pre></div></div><h3 id="custom-headers"><font _mstmutation="1">Custom headers</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#custom-headers" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-4" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-4" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-4" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702" _mstmutation="1">Introduced</a> in GitLab 16.11 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Enabled by default.</font><code>custom_webhook_headers</code></li>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/448604" _mstmutation="1">Generally available</a> in GitLab 17.0. Feature flag  removed.</font><code>custom_webhook_headers</code></li>
+</ul>
+</div>
+</div>
+
+<p>Add custom headers to webhook requests for authentication to external services.
+You can configure up to 20 custom headers per webhook.</p>
+<p>Custom headers must:</p>
+<ul>
+<li>Not override the values of delivery headers.</li>
+<li>Contain only alphanumeric characters, periods, dashes, or underscores.</li>
+<li>Start with a letter and end with a letter or number.</li>
+<li>Have no consecutive periods, dashes, or underscores.</li>
+</ul>
+<p>Custom headers show in <strong>Recent events</strong> with masked values.</p>
+<h3 id="custom-webhook-template"><font _mstmutation="1">Custom webhook template</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#custom-webhook-template" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-5" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-5" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-5" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738" _mstmutation="1">Introduced</a> in GitLab 16.10 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Enabled by default.</font><code>custom_webhook_template</code></li>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/439610" _mstmutation="1">Generally available</a> in GitLab 17.0. Feature flag  removed.</font><code>custom_webhook_template</code></li>
+<li><font _mstmutation="1">JSON serialization of interpolated field values <a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992" _mstmutation="1">introduced</a> in GitLab 18.4 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Disabled by default.</font><code>custom_webhook_template_serialization</code></li>
+<li><font _mstmutation="1">JSON serialization of interpolated field values made <a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212407" _mstmutation="1">generally available</a> in GitLab 18.6. Feature flag  enabled by default.</font><code>custom_webhook_template_serialization</code></li>
+<li><font _mstmutation="1">Feature flag  <a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/580460" _mstmutation="1">removed</a> in GitLab 18.10.</font><code>custom_webhook_template_serialization</code></li>
+</ul>
+</div>
+</div>
+
+<p>Create a custom payload template for your webhook to control the data sent in the request body.</p>
+<h4 id="create-a-custom-webhook-template"><font _mstmutation="1">Create a custom webhook template</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#create-a-custom-webhook-template" title="Permalink" class="anchor"></a></h4>
+<ul>
+<li>For project webhooks, you must have the Maintainer or Owner role for the project.</li>
+<li>For group webhooks, you must have the Owner role for the group.</li>
+</ul>
+<p>To create a custom webhook template:</p>
+<ol>
+<li>Go to your webhook configuration.</li>
+<li>Set a custom webhook template.</li>
+<li>Ensure the template renders as valid JSON.</li>
+</ol>
+<p>Use fields from the payload of an event in your template. For example:</p>
+<ul>
+<li><code>{{build_name}}</code><font _mstmutation="1"> for a job event</font></li>
+<li><code>{{deployable_url}}</code><font _mstmutation="1"> for a deployment event</font></li>
+</ul>
+<p>To access nested properties, use periods to separate path segments.</p>
+<h4 id="example-custom-webhook-template"><font _mstmutation="1">Example custom webhook template</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#example-custom-webhook-template" title="Permalink" class="anchor"></a></h4>
+<p>For this custom payload template:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="json" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">json</font></span></span><button id="copyCodeblock-60c79cab-3099-4d72-9fd5-a05d3c03d3ab" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">"event"</span><span class="p">:</span> <span class="s2">"{{object_kind}}"</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">"project_name"</span><span class="p">:</span> <span class="s2">"{{project.name}}"</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p><font _mstmutation="1">The resulting request payload for a  event is:</font><code>push</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="json" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">json</font></span></span><button id="copyCodeblock-e63639d3-0307-4d77-a96f-dcdb9b4fd238" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">"event"</span><span class="p">:</span> <span class="s2">"push"</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">"project_name"</span><span class="p">:</span> <span class="s2">"Example"</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>Custom webhook templates cannot access properties in arrays.</p>
+<h3 id="filter-push-events-by-branch"><font _mstmutation="1">Filter push events by branch</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#filter-push-events-by-branch" title="Permalink" class="anchor"></a></h3>
+<p><font _mstmutation="1">Filter  events sent to your webhook endpoint by the branch name.
+Use one of these filtering options:</font><code>push</code></p>
+<ul>
+<li><strong>All branches</strong>: Receive push events from all branches.</li>
+<li><strong>Wildcard pattern</strong>: Receive push events from branches that match a wildcard pattern.</li>
+<li><strong>Regular expression</strong>: Receive push events from branches that match a regular expression (regex).</li>
+</ul>
+<h4 id="use-a-wildcard-pattern"><font _mstmutation="1">Use a wildcard pattern</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#use-a-wildcard-pattern" title="Permalink" class="anchor"></a></h4>
+<p>To filter by using a wildcard pattern:</p>
+<ol>
+<li>In the webhook configuration, select <strong>Wildcard pattern</strong>.</li>
+<li><font _mstmutation="1">Enter a pattern.
+For example:
+</font><ul>
+<li><code>*-stable</code><font _mstmutation="1"> to match branches ending with .</font><code>-stable</code></li>
+<li><code>production/*</code><font _mstmutation="1"> to match branches in the  namespace.</font><code>production/</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="use-a-regular-expression"><font _mstmutation="1">Use a regular expression</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#use-a-regular-expression" title="Permalink" class="anchor"></a></h4>
+<p>To filter by using a regular expression:</p>
+<ol>
+<li>In the webhook configuration, select <strong>Regular expression</strong>.</li>
+<li>Enter a regex pattern that follows the <a href="https://github.com/google/re2/wiki/Syntax">RE2 syntax</a>.</li>
+</ol>
+<p><font _mstmutation="1">For example, to exclude the  branch, use:</font><code>main</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="plaintext" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><!----><button id="copyCodeblock-5f92e544-23ef-4af0-9188-8fbe37c4113a" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-4 gl-right-4" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">\b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+</span></span></code></pre></div></div><h3 id="configure-webhooks-to-support-mutual-tls"><font _mstmutation="1">Configure webhooks to support mutual TLS</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-webhooks-to-support-mutual-tls" title="Permalink" class="anchor"></a></h3>
+<div class="availability gl-pl-4 gl-pr-4"><ul class="gl-list-none gl-p-0 gl-m-0"><li>
+      <font _mstmutation="1"><span class="gl-font-bold" _mstmutation="1">Offering</span>: GitLab Self-Managed</font></li></ul>
+</div>
+
+<p>Configure webhooks to support mutual TLS by setting a global client certificate in PEM format.</p>
+<p>Prerequisites:</p>
+<ul>
+<li>You must be a GitLab administrator.</li>
+</ul>
+<p>To configure mutual TLS for webhooks:</p>
+<ol>
+<li>Prepare a client certificate in PEM format.</li>
+<li>Optional. Protect the certificate with a PEM passphrase.</li>
+<li>Configure GitLab to use the certificate.</li>
+</ol>
+<div data-vue-app="docs-tabs" data-v-app=""><div class="tab-block-wrapper gl-border gl-rounded-lg gl-my-5"><div class="tabs gl-tabs" id="__BVID__56"><!----><div class="gl-tabs-wrapper"><!----><ul class="nav gl-tabs-nav" role="tablist" id="__BVID__56__BV_tab_controls_"><!----><li class="nav-item" role="presentation"><a class="nav-link active gl-tab-nav-item gl-tab-nav-item-active" role="tab" aria-selected="true" aria-setsize="3" aria-posinset="1" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#" target="_self" id="__BVID__58___BV_tab_button__" aria-controls="__BVID__58">Linux package (Omnibus)</a></li><li class="nav-item" role="presentation"><a class="nav-link gl-tab-nav-item" role="tab" tabindex="-1" aria-selected="false" aria-setsize="3" aria-posinset="2" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#" target="_self" id="__BVID__63___BV_tab_button__" aria-controls="__BVID__63">Docker</a></li><li class="nav-item" role="presentation"><a class="nav-link gl-tab-nav-item" role="tab" tabindex="-1" aria-selected="false" aria-setsize="3" aria-posinset="3" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#" target="_self" id="__BVID__68___BV_tab_button__" aria-controls="__BVID__68">Self-compiled (source)</a></li><!----></ul><!----></div><div class="tab-content gl-tab-content" id="__BVID__56__BV_tab_container_"><div class="tab-pane active" role="tabpanel" aria-hidden="false" enterclass="" leaveclass="show" query-param-value="Linux package (Omnibus)" id="__BVID__58" aria-labelledby="__BVID__58___BV_tab_button__" style=""><div class="tab-content">
+    
+    
+    
+    <ol>
+<li>
+<p><font _mstmutation="1">Edit :</font><code>/etc/gitlab/gitlab.rb</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="ruby" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">ruby</font></span></span><button id="copyCodeblock-a42c8d14-4ae9-406c-9f26-b7838e05b122" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">gitlab_rails</span><span class="o">[</span><span class="s1">'http_client'</span><span class="o">][</span><span class="s1">'tls_client_cert_file'</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'&lt;PATH TO CLIENT PEM FILE&gt;'</span>
+</span></span><span class="line"><span class="cl"><span class="n">gitlab_rails</span><span class="o">[</span><span class="s1">'http_client'</span><span class="o">][</span><span class="s1">'tls_client_cert_password'</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'&lt;OPTIONAL PASSWORD&gt;'</span></span></span></code></pre></div></div></li>
+<li>
+<p>Save the file and reconfigure GitLab:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="shell" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">shell</font></span></span><button id="copyCodeblock-11aaca97-f667-42d6-9c04-d9addb9dadd1" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo gitlab-ctl reconfigure</span></span></code></pre></div></div></li>
+</ol>
+</div></div><div class="tab-pane" role="tabpanel" aria-hidden="true" enterclass="" leaveclass="show" query-param-value="Docker" style="display: none;" id="__BVID__63" aria-labelledby="__BVID__63___BV_tab_button__"><div class="tab-content">
+    
+    
+    
+    <ol>
+<li>
+<p><font _mstmutation="1">Edit :</font><code>docker-compose.yml</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="yaml" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">yaml</font></span></span><button id="copyCodeblock-0ed99bcd-c439-4bdc-8ad5-8986b6580313" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.6"</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">gitlab</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s1">'gitlab/gitlab-ee:latest'</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l">always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s1">'gitlab.example.com'</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">GITLAB_OMNIBUS_CONFIG</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">         gitlab_rails['http_client']['tls_client_cert_file'] = '&lt;PATH TO CLIENT PEM FILE&gt;'
+</span></span></span><span class="line"><span class="cl"><span class="sd">         gitlab_rails['http_client']['tls_client_cert_password'] = '&lt;OPTIONAL PASSWORD&gt;'</span></span></span></code></pre></div></div></li>
+<li>
+<p>Save the file and restart GitLab:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="shell" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">shell</font></span></span><button id="copyCodeblock-3e8ab063-44f4-4914-a6c5-a962b2e987a1" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker compose up -d</span></span></code></pre></div></div></li>
+</ol>
+</div></div><div class="tab-pane" role="tabpanel" aria-hidden="true" enterclass="" leaveclass="show" query-param-value="Self-compiled (source)" id="__BVID__68" aria-labelledby="__BVID__68___BV_tab_button__" style="display: none;"><div class="tab-content">
+    
+    
+    
+    <ol>
+<li>
+<p><font _mstmutation="1">Edit :</font><code>/home/git/gitlab/config/gitlab.yml</code></p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="yaml" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">yaml</font></span></span><button id="copyCodeblock-7b90f0aa-63fc-4136-8c7f-c4119e69547b" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">production</span><span class="p">:</span><span class="w"> </span><span class="cp">&amp;base</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">http_client</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">tls_client_cert_file</span><span class="p">:</span><span class="w"> </span><span class="s1">'&lt;PATH TO CLIENT PEM FILE&gt;'</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">tls_client_cert_password</span><span class="p">:</span><span class="w"> </span><span class="s1">'&lt;OPTIONAL PASSWORD&gt;'</span></span></span></code></pre></div></div></li>
+<li>
+<p>Save the file and restart GitLab:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="shell" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">shell</font></span></span><button id="copyCodeblock-e8a5e69f-b0b0-43a5-8545-fe7a35d381e5" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># For systems running systemd</span>
+</span></span><span class="line"><span class="cl">sudo systemctl restart gitlab.target
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># For systems running SysV init</span>
+</span></span><span class="line"><span class="cl">sudo service gitlab restart</span></span></code></pre></div></div></li>
+</ol>
+</div></div><!----></div></div></div></div>
+
+<p>After configuration, GitLab presents this certificate to the server during TLS handshakes for webhook connections.</p>
+<h3 id="configure-firewalls-for-webhook-traffic"><font _mstmutation="1">Configure firewalls for webhook traffic</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-firewalls-for-webhook-traffic" title="Permalink" class="anchor"></a></h3>
+<p>Configure firewalls for webhook traffic based on how GitLab sends webhooks:</p>
+<ul>
+<li>Asynchronously from Sidekiq nodes (most common)</li>
+<li>Synchronously from Rails nodes (in specific cases)</li>
+</ul>
+<p>Webhooks are sent synchronously from Rails nodes when you test or retry a webhook in the UI.</p>
+<p>When configuring firewalls, ensure both Sidekiq and Rails nodes can send webhook traffic.</p>
+<h2 id="manage-webhooks"><font _mstmutation="1">Manage webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#manage-webhooks" title="Permalink" class="anchor"></a></h2>
+<p>Monitor and maintain your configured webhooks in GitLab.</p>
+<h3 id="view-webhook-request-history"><font _mstmutation="1">View webhook request history</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#view-webhook-request-history" title="Permalink" class="anchor"></a></h3>
+<p>View the history of webhook requests to monitor their performance and troubleshoot issues.</p>
+<p>Prerequisites:</p>
+<ul>
+<li>For project webhooks, you must have the Maintainer or Owner role for the project.</li>
+<li>For group webhooks, you must have the Owner role for the group.</li>
+</ul>
+<p>To view the request history for a webhook:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong>.</li>
+<li>Select <strong>Edit</strong> for the webhook.</li>
+<li>Go to the <strong>Recent events</strong> section.</li>
+</ol>
+<p>The <strong>Recent events</strong> section displays all requests made to a webhook in the last two days.
+The table includes:</p>
+<ul>
+<li><font _mstmutation="1">HTTP status code:
+</font><ul>
+<li><font _mstmutation="1">Green for - codes</font><code>200</code><code>299</code></li>
+<li>Red for other codes</li>
+<li><code>internal error</code><font _mstmutation="1"> for failed deliveries</font></li>
+</ul>
+</li>
+<li>Triggered event</li>
+<li>Elapsed time of the request</li>
+<li>Relative time the request was made</li>
+</ul>
+<p>
+
+<a href="./Webhooks _ GitLab Docs_files/webhook_logs_v14_4.png" class="js-lightbox" target="_blank" rel="noopener noreferrer">
+  <img alt="Webhook event log showing status codes and response times" height="436" src="./Webhooks _ GitLab Docs_files/webhook_logs_v14_4.png" width="1936" _mstalt="2142231">
+</a></p>
+<h4 id="inspect-request-and-response-details"><font _mstmutation="1">Inspect request and response details</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#inspect-request-and-response-details" title="Permalink" class="anchor"></a></h4>
+<p>Prerequisites:</p>
+<ul>
+<li>For project webhooks, you must have the Maintainer or Owner role for the project.</li>
+<li>For group webhooks, you must have the Owner role for the group.</li>
+</ul>
+<p>Each webhook request in <strong>Recent events</strong> has a <strong>Request details</strong> page.
+This page contains the body and headers of:</p>
+<ul>
+<li>The response GitLab received from the webhook receiver endpoint</li>
+<li>The webhook request GitLab sent</li>
+</ul>
+<p>To inspect the request and response details of a webhook event:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong>.</li>
+<li>Select <strong>Edit</strong> for the webhook.</li>
+<li>Go to the <strong>Recent events</strong> section.</li>
+<li>Select <strong>View details</strong> for the event.</li>
+</ol>
+<p><font _mstmutation="1">To send the request again with the same data and the same  header, select <strong _mstmutation="1">Resend Request</strong>.
+If the webhook URL has changed, you cannot resend the request.
+You can also resend the request programmatically through the project webhooks API.</font><code>Idempotency-Key</code></p>
+<h3 id="test-a-webhook"><font _mstmutation="1">Test a webhook</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#test-a-webhook" title="Permalink" class="anchor"></a></h3>
+<p>Test a webhook to ensure it’s working properly or to re-enable a disabled webhook.</p>
+<p>Prerequisites:</p>
+<ul>
+<li>For project webhooks, you must have the Maintainer or Owner role for the project.</li>
+<li>For group webhooks, you must have the Owner role for the group.</li>
+<li><font _mstmutation="1">To test , your project must have at least one commit.</font><code>push events</code></li>
+</ul>
+<p>To test a webhook:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong> to see all webhooks for this project.</li>
+<li><font _mstmutation="1">To test a webhook directly from the list of configured webhooks:
+</font><ol>
+<li>Locate the webhook you want to test.</li>
+<li>From the <strong>Test</strong> dropdown list, select the type of event to test.</li>
+</ol>
+</li>
+<li><font _mstmutation="1">To test a webhook while editing it:
+</font><ol>
+<li>Locate the webhook you want to test, and select <strong>Edit</strong>.</li>
+<li>Make your changes to the webhook.</li>
+<li>Select the <strong>Test</strong> dropdown list, then select the type of event to test.</li>
+</ol>
+</li>
+</ol>
+<p>Testing is not supported for some types of events for project and group webhooks.
+For more information, see <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/379201">issue 379201</a>.</p>
+<h2 id="webhook-reference"><font _mstmutation="1">Webhook reference</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-reference" title="Permalink" class="anchor"></a></h2>
+<p>Use this technical reference to:</p>
+<ul>
+<li>Understand how GitLab webhooks work.</li>
+<li>Integrate webhooks with your systems.</li>
+<li>Set up, troubleshoot, and optimize your webhook configurations.</li>
+</ul>
+<h3 id="webhook-receiver-requirements"><font _mstmutation="1">Webhook receiver requirements</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-receiver-requirements" title="Permalink" class="anchor"></a></h3>
+<p>Implement fast and stable webhook receiver endpoints to ensure reliable webhook delivery.</p>
+<p>Slow, unstable, or incorrectly configured receivers might be disabled automatically.
+Invalid HTTP responses are treated as failed requests.</p>
+<p>To optimize your webhook receivers:</p>
+<ol>
+<li><font _mstmutation="1">Respond quickly with a  or  status:
+</font><code>200</code><code>201</code><ul>
+<li>Avoid processing webhooks in the same request.</li>
+<li>Use a queue to handle webhooks after receiving them.</li>
+<li>Respond before the timeout limit to prevent automatic disabling on GitLab.com.</li>
+</ul>
+</li>
+<li><font _mstmutation="1">Handle potential duplicate events:
+</font><ul>
+<li>Prepare for duplicate events if a webhook times out.</li>
+<li>Ensure your endpoint is consistently fast and stable.</li>
+</ul>
+</li>
+<li><font _mstmutation="1">Minimize response headers and body:
+</font><ul>
+<li>GitLab stores response headers and body for later inspection.</li>
+<li>Limit the number and size of returned headers.</li>
+<li>Consider responding with an empty body.</li>
+</ul>
+</li>
+<li><font _mstmutation="1">Use appropriate status codes:
+</font><ul>
+<li><font _mstmutation="1">Return client error status responses ( range) only for misconfigured webhooks.</font><code>4xx</code></li>
+<li><font _mstmutation="1">For unsupported events, return  or ignore the payload.</font><code>400</code></li>
+<li><font _mstmutation="1">Avoid  server error responses for handled events.</font><code>500</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="auto-disabled-webhooks"><font _mstmutation="1">Auto-disabled webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#auto-disabled-webhooks" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-8" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-8" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-8" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/385902">Introduced</a> for group webhooks in GitLab 15.10.</li>
+<li><font _mstmutation="1"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/390157" _mstmutation="1">Disabled on GitLab Self-Managed</a> for project webhooks in GitLab 15.10 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named .</font><code>auto_disabling_web_hooks</code></li>
+<li><strong>Fails to connect</strong> and <strong>Failing to connect</strong> <a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329">renamed</a> to <strong>Disabled</strong> and <strong>Temporarily disabled</strong> in GitLab 17.11.</li>
+<li><a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329">Changed</a> to become permanently disabled after 40 consecutive failures in GitLab 17.11.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="alert alert-type-flag gl-rounded-lg">
+    <div class="alert-icon"></div>
+    <div class="gl-min-w-0"><p>The availability of this feature is controlled by a feature flag.
+For more information, see the history.</p></div>
+  </div><p>GitLab automatically disables project or group webhooks that fail four consecutive times.</p>
+<p>To view auto-disabled webhooks:</p>
+<ol>
+<li>In the top bar, select <strong>Search or go to</strong> and find your project or group.</li>
+<li>In the left sidebar, select <strong>Settings</strong> &gt; <strong>Webhooks</strong>.</li>
+</ol>
+<p>In the webhook list, auto-disabled webhooks display as:</p>
+<ul>
+<li><strong>Temporarily disabled</strong> if they fail four consecutive times</li>
+<li><strong>Disabled</strong> if they fail 40 consecutive times</li>
+</ul>
+<p>
+
+<a href="./Webhooks _ GitLab Docs_files/failed_badges_v17_11.png" class="js-lightbox" target="_blank" rel="noopener noreferrer">
+  <img alt="Webhook list showing disabled and temporarily disabled status badges." height="639" src="./Webhooks _ GitLab Docs_files/failed_badges_v17_11.png" width="1148" _mstalt="3072121">
+</a></p>
+<h4 id="temporarily-disabled-webhooks"><font _mstmutation="1">Temporarily disabled webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#temporarily-disabled-webhooks" title="Permalink" class="anchor"></a></h4>
+<p>Webhooks are temporarily disabled if they fail four consecutive times.
+If webhooks fail 40 consecutive times, they become permanently disabled.</p>
+<p>Failure occurs when:</p>
+<ul>
+<li><font _mstmutation="1">The webhook receiver returns a response code in the  or  range.</font><code>4xx</code><code>5xx</code></li>
+<li>The webhook experiences a timeout when attempting to connect to the webhook receiver.</li>
+<li>The webhook encounters other HTTP errors.</li>
+</ul>
+<p>Temporarily disabled webhooks are initially disabled for one minute,
+with the duration extending on subsequent failures up to 24 hours.
+After this period has elapsed, these webhooks are automatically re-enabled.</p>
+<h4 id="permanently-disabled-webhooks"><font _mstmutation="1">Permanently disabled webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#permanently-disabled-webhooks" title="Permalink" class="anchor"></a></h4>
+<p>Webhooks are permanently disabled if they fail 40 consecutive times.
+Unlike temporarily disabled webhooks, these webhooks are not automatically re-enabled.</p>
+<p>Webhooks that were permanently disabled in GitLab 17.10 and earlier underwent a data migration.
+These webhooks might display four failures in <strong>Recent events</strong>
+even though the UI might state they have 40 failures.</p>
+<h4 id="re-enable-disabled-webhooks"><font _mstmutation="1">Re-enable disabled webhooks</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#re-enable-disabled-webhooks" title="Permalink" class="anchor"></a></h4>
+<p><font _mstmutation="1">To re-enable a disabled webhook, send a test request.
+The webhook is re-enabled if the test request returns a response code in the  range.</font><code>2xx</code></p>
+<h3 id="delivery-headers"><font _mstmutation="1">Delivery headers</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#delivery-headers" title="Permalink" class="anchor"></a></h3>
+<div class="collapsible-section gl-pl-4 gl-pr-4"><button class="gl-font-bold gl-align-middle gl-text-left gl-border-0 gl-pl-0" type="button" aria-expanded="false" aria-controls="collapsible-9" aria-label="Toggle section" data-toggle="collapse" data-target="#collapsible-9" _mstaria-label="233428"><font _mstmutation="1">History</font><span class="gl-ml-2 icon"></span>
+    </button>
+    <div id="collapsible-9" class="collapsible-list collapse" aria-hidden="true"><ul>
+<li><code>Idempotency-Key</code><font _mstmutation="1"> header <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/388692" _mstmutation="1">introduced</a> in GitLab 17.4.</font></li>
+<li><code>webhook-id</code><font _mstmutation="1"> and  headers <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/19367" _mstmutation="1">introduced</a> in GitLab 19.0.</font><code>webhook-timestamp</code></li>
+<li><code>webhook-signature</code><font _mstmutation="1"> header <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/19367" _mstmutation="1">introduced</a> in GitLab 19.0 <a href="https://docs.gitlab.com/19.3/administration/feature_flags/" _mstmutation="1">with a feature flag</a> named . Enabled by default.</font><code>webhook_signing_token</code></li>
+<li><font _mstmutation="1">Feature flag  <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/596374" _mstmutation="1">removed</a> in GitLab 19.1.</font><code>webhook_signing_token</code></li>
+</ul>
+</div>
+</div>
+
+<p>GitLab includes the following headers in webhook requests to your endpoint.</p>
+<div class="table-container">
+  <table class="docs-table">
+    <thead>
+      <tr>
+        <th>Header</th>
+        <th>Description</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Idempotency-Key</code></td>
+        <td><font _mstmutation="1">Unique ID consistent across webhook retries. Available for legacy reasons; prefer .</font><code>webhook-id</code></td>
+        <td><code>"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"</code></td>
+      </tr>
+      <tr>
+        <td><code>User-Agent</code></td>
+        <td><font _mstmutation="1">User agent in the format .</font><code>"Gitlab/&lt;VERSION&gt;"</code></td>
+        <td><code>"GitLab/15.5.0-pre"</code></td>
+      </tr>
+      <tr>
+        <td><code>webhook-id</code></td>
+        <td><font _mstmutation="1">Unique message ID consistent across webhook retries. Equal to .</font><code>Idempotency-Key</code></td>
+        <td><code>"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"</code></td>
+      </tr>
+      <tr>
+        <td><code>webhook-signature</code></td>
+        <td><font _mstmutation="1">Space-separated list of HMAC-SHA256 signatures, each in the format . Included only when a <a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#signing-tokens" _mstmutation="1">signing token</a> is configured.</font><code>v1,{base64_signature}</code></td>
+        <td><code>"v1,abc123def456=="</code></td>
+      </tr>
+      <tr>
+        <td><code>webhook-timestamp</code></td>
+        <td>Unix timestamp (seconds since epoch) when the request was generated.</td>
+        <td><code>"1744578123"</code></td>
+      </tr>
+      <tr>
+        <td><code>X-Gitlab-Event-UUID</code></td>
+        <td>Unique ID for non-recursive webhooks. Recursive webhooks (triggered by earlier webhooks) share the same value.</td>
+        <td><code>"13792a34-cac6-4fda-95a8-c58e00a3954e"</code></td>
+      </tr>
+      <tr>
+        <td><code>X-Gitlab-Event</code></td>
+        <td><font _mstmutation="1">Webhook type name. Corresponds to event types in the format .</font><code>"&lt;EVENT&gt; Hook"</code></td>
+        <td><code>"Push Hook"</code></td>
+      </tr>
+      <tr>
+        <td><code>X-Gitlab-Instance</code></td>
+        <td>Hostname of the GitLab instance that sent the webhook.</td>
+        <td><code>"https://gitlab.com"</code></td>
+      </tr>
+      <tr>
+        <td><code>X-Gitlab-Token</code></td>
+        <td>Secret token for the webhook, sent as plain text. Included only when a secret token is configured.</td>
+        <td><code>"my-secret-token"</code></td>
+      </tr>
+      <tr>
+        <td><code>X-Gitlab-Webhook-UUID</code></td>
+        <td>Unique ID for each webhook.</td>
+        <td><code>"02affd2d-2cba-4033-917d-ec22d5dc4b38"</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3 id="image-url-display-in-webhook-body"><font _mstmutation="1">Image URL display in webhook body</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#image-url-display-in-webhook-body" title="Permalink" class="anchor"></a></h3>
+<p>GitLab rewrites relative image references to absolute URLs in webhook bodies.</p>
+<h4 id="image-url-rewriting-example"><font _mstmutation="1">Image URL rewriting example</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#image-url-rewriting-example" title="Permalink" class="anchor"></a></h4>
+<p>If the original image reference in a merge request, comment, or wiki page is:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="markdown" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">markdown</font></span></span><button id="copyCodeblock-7fac1fd5-6f12-4435-a3e4-40204957488a" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">![<span class="nt">A Markdown image with a relative URL.</span>](<span class="na">/uploads/$sha/image.png</span>)</span></span></code></pre></div></div><p>The rewritten image reference in the webhook body would be:</p>
+<div class="codeblock-wrapper" data-elastic-exclude="">
+    <div data-vue-app="codeblock-toolbar" data-code-language="markdown" class="codeblock-toolbar" data-v-app=""><div class="docs-codeblock-toolbar"><span class="gl-badge badge badge-pill badge-tier gl-mb-3 gl-flex gl-w-fit" data-testid="code-lang"><!----><span class="gl-badge-content"><font _mstmutation="1">markdown</font></span></span><button id="copyCodeblock-d62d2ffc-3f66-4371-befa-bee3a510c5ee" title="Copy" aria-label="Copy to clipboard" type="button" class="btn gl-button btn-default btn-md btn-default-tertiary btn-icon gl-absolute gl-top-5 gl-right-5" _mstaria-label="289068"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><!----></button><!----></div></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">![<span class="nt">A Markdown image with an absolute URL.</span>](<span class="na">https://gitlab.example.com/-/project/:id/uploads/&lt;SHA&gt;/image.png</span>)</span></span></code></pre></div></div><p>This example assumes:</p>
+<ul>
+<li><font _mstmutation="1">GitLab is installed at .</font><code>gitlab.example.com</code></li>
+<li><font _mstmutation="1">The project ID is at .</font><code>123</code></li>
+</ul>
+<h4 id="exceptions-to-image-url-rewriting"><font _mstmutation="1">Exceptions to image URL rewriting</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#exceptions-to-image-url-rewriting" title="Permalink" class="anchor"></a></h4>
+<p>GitLab does not rewrite image URLs when:</p>
+<ul>
+<li>They already use HTTP, HTTPS, or protocol-relative URLs.</li>
+<li>They use advanced Markdown features, such as link labels.</li>
+</ul>
+<h2 id="related-topics"><font _mstmutation="1">Related topics</font><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#related-topics" title="Permalink" class="anchor"></a></h2>
+<ul>
+<li><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhook_events/">Webhook events and JSON payloads</a></li>
+<li><a href="https://docs.gitlab.com/19.3/user/gitlab_com/#webhooks">Webhook limits</a></li>
+<li><a href="https://docs.gitlab.com/19.3/api/project_webhooks/">Project webhooks API</a></li>
+<li><a href="https://docs.gitlab.com/19.3/api/group_webhooks/">Group webhooks API</a></li>
+<li><a href="https://docs.gitlab.com/19.3/api/system_hooks/">System hooks API</a></li>
+<li><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks_troubleshooting/">Troubleshooting webhooks</a></li>
+<li><a href="https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/">Send SMS alerts with webhooks and Twilio</a></li>
+<li><a href="https://about.gitlab.com/blog/applying-gitlab-labels-automatically/">Applying GitLab labels automatically</a></li>
+</ul>
+</div>
+      <div data-vue-app="back-to-top-button" data-v-app=""><button aria-label="Back to top" role="button" tooltip="Back to top" type="button" class="btn gl-button btn-default btn-sm btn-default-default btn-icon back-to-top-button gl-shadow-sm gl-fixed gl-bottom-5 gl-right-5 gl-z-40 gl-hidden" _mstaria-label="137137"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="chevron-lg-up-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#chevron-lg-up"></use></svg><!----></button></div>
+    </div>
+
+
+
+
+</div>
+
+  
+    <aside class="sidebar-right">
+      
+        <div data-vue-app="edit-menu" class="edit-menu gl-inline-block gl-pb-4 gl-mt-11-5 gl-ml-8" data-v-app=""><div class="gl-new-dropdown !gl-block gl-disclosure-dropdown" data-testid="edit-menu"><button aria-controls="base-dropdown-15" aria-expanded="false" id="dropdown-toggle-btn-13" data-testid="base-dropdown-toggle" type="button" class="btn gl-button btn-default btn-md btn-block gl-new-dropdown-toggle"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="pencil-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#pencil"></use></svg><span class="gl-w-full gl-button-text"><span class="gl-new-dropdown-button-text" data-testid="base-dropdown-span">Edit this page</span><svg class="gl-icon s16 gl-fill-current gl-button-icon gl-new-dropdown-chevron" data-testid="chevron-down-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#chevron-down"></use></svg><!----></span></button><div class="gl-new-dropdown-container"><div id="base-dropdown-15" data-testid="base-dropdown-menu" class="gl-new-dropdown-panel !gl-w-31"><div class="gl-new-dropdown-arrow"></div><div class="gl-new-dropdown-inner"><ul id="disclosure-14" aria-labelledby="dropdown-toggle-btn-13" data-testid="disclosure-content" class="gl-new-dropdown-contents" tabindex="-1"><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="0-menu-item"><a href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/project/integrations/webhooks.md" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><div class="gl-flex gl-flex-col"><span class="gl-flex gl-items-center gl-justify-between"><span data-testid="action-primary-text" class="gl-font-bold">View page source</span></span><span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary gl-mt-1">Edit this file only.</span></div></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="1-menu-item"><a href="https://gitlab.com/-/ide/project/gitlab-org/gitlab/edit/master/-/doc/user/project/integrations/webhooks.md" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><div class="gl-flex gl-flex-col"><span class="gl-flex gl-items-center gl-justify-between"><span data-testid="action-primary-text" class="gl-font-bold">Open in Web IDE</span></span><span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary gl-mt-1">Edit multiple files.</span></div></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="2-menu-item"><button type="button" class="gl-new-dropdown-item-content" tabindex="-1"><span class="gl-new-dropdown-item-text-wrapper"><div class="gl-flex gl-flex-col"><span class="gl-flex gl-items-center gl-justify-between"><span data-testid="action-primary-text" class="gl-font-bold">Create an issue</span></span><span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary gl-mt-1">Suggest improvements.</span></div></span></button></li></ul></li></ul></div></div></div></div></div>
+        <div data-vue-app="copy-for-llm" class="copy-for-llm gl-inline-block gl-border-b gl-pb-4 gl-ml-8" data-v-app=""><div class="gl-button-group btn-group gl-flex gl-w-full" role="group"><button type="button" class="btn gl-button btn-default btn-md !gl-pl-0 gl-grow gl-justify-start"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg><span class="gl-button-text"><font _mstmutation="1">Copy for LLM</font><!----></span></button><div class="gl-new-dropdown gl-disclosure-dropdown"><button aria-controls="base-dropdown-6" aria-expanded="false" id="dropdown-toggle-btn-4" data-testid="base-dropdown-toggle" type="button" class="btn gl-button btn-default btn-md gl-new-dropdown-toggle gl-new-dropdown-icon-only btn-icon gl-new-dropdown-toggle-no-caret"><!----><svg class="gl-icon s16 gl-fill-current gl-button-icon" data-testid="chevron-down-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#chevron-down"></use></svg><span class="gl-button-text"><span class="gl-new-dropdown-button-text gl-sr-only" data-testid="base-dropdown-span">Copy for LLM</span><!----><!----></span></button><div class="gl-new-dropdown-container"><div id="base-dropdown-6" data-testid="base-dropdown-menu" class="gl-new-dropdown-panel !gl-w-31"><div class="gl-new-dropdown-arrow"></div><div class="gl-new-dropdown-inner"><ul id="disclosure-5" aria-labelledby="dropdown-toggle-btn-4" data-testid="disclosure-content" class="gl-new-dropdown-contents" tabindex="-1"><li class=""><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><button type="button" class="gl-new-dropdown-item-content" tabindex="-1"><span class="gl-new-dropdown-item-text-wrapper"><span class="gl-flex gl-items-center gl-justify-between gl-gap-3"><font _mstmutation="1">Copy as Markdown </font><svg class="gl-icon s16 gl-fill-current" data-testid="copy-to-clipboard-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#copy-to-clipboard"></use></svg></span></span></button></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a rel="noopener noreferrer" target="_blank" href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/index.md" tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><span class="gl-flex gl-items-center gl-justify-between gl-gap-3"><font _mstmutation="1">View as Markdown </font><svg class="gl-icon s16 gl-fill-current" data-testid="external-link-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#external-link"></use></svg></span></span></a></li></ul></li><li class="gl-border-t gl-border-t-dropdown-divider gl-pt-2 gl-mt-2"><!----><ul class="gl-new-dropdown-item-group gl-mb-0 gl-list-none gl-pl-0"><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a rel="noopener noreferrer" target="_blank" href="https://claude.ai/new?q=Read%20from%20https%3A%2F%2Fdocs.gitlab.com%2F19.3%2Fuser%2Fproject%2Fintegrations%2Fwebhooks%2Findex.md%20and%20answer%20my%20follow-up%20questions%20about%20it." tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><span class="gl-flex gl-items-center gl-justify-between gl-gap-3"><font _mstmutation="1">Open in Claude </font><svg class="gl-icon s16 gl-fill-current" data-testid="external-link-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#external-link"></use></svg></span></span></a></li><li tabindex="0" class="gl-new-dropdown-item" data-testid="disclosure-dropdown-item"><a rel="noopener noreferrer" target="_blank" href="https://chatgpt.com/?q=Read%20from%20https%3A%2F%2Fdocs.gitlab.com%2F19.3%2Fuser%2Fproject%2Fintegrations%2Fwebhooks%2Findex.md%20and%20answer%20my%20follow-up%20questions%20about%20it." tabindex="-1" class="gl-new-dropdown-item-content"><span class="gl-new-dropdown-item-text-wrapper"><span class="gl-flex gl-items-center gl-justify-between gl-gap-3"><font _mstmutation="1">Open in ChatGPT </font><svg class="gl-icon s16 gl-fill-current" data-testid="external-link-icon" role="img" aria-hidden="true"><use href="/19.3/icons.svg#external-link"></use></svg></span></span></a></li></ul></li></ul></div></div></div></div></div></div>
+      
+      <div data-ga-section="toc" data-vue-app="toc" data-v-app=""><nav class="toc" aria-label="Table of Contents" baseurl="/19.3/" pagemetadata="[object Object]" _mstaria-label="286949"><ul class="toc-list gl-list-none"><li class="toc-item toc-level-2 toc-active"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-events" class="toc-link gl-text-gray-800" aria-current="location">Webhook events</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-limits" class="toc-link gl-text-gray-800">Webhook limits</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#push-event-limits" class="toc-link gl-text-gray-800">Push event limits</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#group-webhooks" class="toc-link gl-text-gray-800">Group webhooks</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#types-of-group-webhook-events" class="toc-link gl-text-gray-800">Types of group webhook events</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhooks-in-both-a-project-and-a-group" class="toc-link gl-text-gray-800">Webhooks in both a project and a group</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-webhooks" class="toc-link gl-text-gray-800">Configure webhooks</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#create-a-webhook" class="toc-link gl-text-gray-800">Create a webhook</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#signing-tokens" class="toc-link gl-text-gray-800">Signing tokens</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#verify-the-signature" class="toc-link gl-text-gray-800">Verify the signature</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#backward-compatibility" class="toc-link gl-text-gray-800">Backward compatibility</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#security-considerations" class="toc-link gl-text-gray-800">Security considerations</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#mask-sensitive-portions-of-webhook-urls" class="toc-link gl-text-gray-800">Mask sensitive portions of webhook URLs</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#custom-headers" class="toc-link gl-text-gray-800">Custom headers</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#custom-webhook-template" class="toc-link gl-text-gray-800">Custom webhook template</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#create-a-custom-webhook-template" class="toc-link gl-text-gray-800">Create a custom webhook template</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#example-custom-webhook-template" class="toc-link gl-text-gray-800">Example custom webhook template</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#filter-push-events-by-branch" class="toc-link gl-text-gray-800">Filter push events by branch</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#use-a-wildcard-pattern" class="toc-link gl-text-gray-800">Use a wildcard pattern</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#use-a-regular-expression" class="toc-link gl-text-gray-800">Use a regular expression</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-webhooks-to-support-mutual-tls" class="toc-link gl-text-gray-800">Configure webhooks to support mutual TLS</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#configure-firewalls-for-webhook-traffic" class="toc-link gl-text-gray-800">Configure firewalls for webhook traffic</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#manage-webhooks" class="toc-link gl-text-gray-800">Manage webhooks</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#view-webhook-request-history" class="toc-link gl-text-gray-800">View webhook request history</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#inspect-request-and-response-details" class="toc-link gl-text-gray-800">Inspect request and response details</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#test-a-webhook" class="toc-link gl-text-gray-800">Test a webhook</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-reference" class="toc-link gl-text-gray-800">Webhook reference</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#webhook-receiver-requirements" class="toc-link gl-text-gray-800">Webhook receiver requirements</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#auto-disabled-webhooks" class="toc-link gl-text-gray-800">Auto-disabled webhooks</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#temporarily-disabled-webhooks" class="toc-link gl-text-gray-800">Temporarily disabled webhooks</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#permanently-disabled-webhooks" class="toc-link gl-text-gray-800">Permanently disabled webhooks</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#re-enable-disabled-webhooks" class="toc-link gl-text-gray-800">Re-enable disabled webhooks</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#delivery-headers" class="toc-link gl-text-gray-800">Delivery headers</a></li><li class="toc-item toc-level-3"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#image-url-display-in-webhook-body" class="toc-link gl-text-gray-800">Image URL display in webhook body</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#image-url-rewriting-example" class="toc-link gl-text-gray-800">Image URL rewriting example</a></li><li class="toc-item toc-level-4"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#exceptions-to-image-url-rewriting" class="toc-link gl-text-gray-800">Exceptions to image URL rewriting</a></li><li class="toc-item toc-level-2"><a href="https://docs.gitlab.com/19.3/user/project/integrations/webhooks/#related-topics" class="toc-link gl-text-gray-800">Related topics</a></li></ul></nav></div>
+    </aside>
+  
+</div>
+<script type="module" src="./Webhooks _ GitLab Docs_files/page_content.js.下载"></script>
+
+
+  </main>
+  <footer data-ga-section="footer">
+    <section data-ga-section="footer">
+
+<div id="footer" class="footer-section container gl-grid gl-grid-cols-2 gl-grid-rows-3 gl-grid-rows-auto gl-gap-8 lg:gl-grid-cols-5 lg:gl-grid-rows-1 lg:gl-justify-items-center gl-px-8 gl-py-8 lg:gl-py-10">
+
+  
+    <div class="gl-col-span-2 lg:gl-col-span-1 gl-row-start-1">
+        <div class="docs-title gl-flex gl-items-center">
+          <a href="https://docs.gitlab.com/19.3/">
+            <img src="./Webhooks _ GitLab Docs_files/gitlab-logo-footer.svg" alt="GitLab Docs logo" class="logo" width="176" height="24" _mstalt="249054">
+          </a>
+        </div>
+        <ul class="docs-social gl-list-none gl-flex">
+            <li>
+              <a href="https://www.facebook.com/gitlab" class="facebook">
+                <span class="gl-sr-only">Facebook</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/company/gitlab-com" class="linkedin">
+                <span class="gl-sr-only">LinkedIn</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/gitlab" class="twitter">
+                <span class="gl-sr-only">Twitter</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg" class="youtube">
+                <span class="gl-sr-only">YouTube</span>
+              </a>
+            </li>
+        </ul>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener noreferrer" class="gl-mt-0">
+          <img src="./Webhooks _ GitLab Docs_files/by-sa.svg" alt="Creative Commons License" width="80" height="15" _mstalt="517985">
+        </a>
+    </div>
+
+    
+    <div class="gl-col-span-1 gl-row-start-2 lg:gl-row-start-1">
+        <div class="footer-section-title gl-heading-3">Company</div>
+        <ul class="gl-list-none gl-p-0">
+            <li><a href="https://about.gitlab.com/company/">About GitLab</a></li>
+            <li><a href="https://about.gitlab.com/pricing/">View pricing</a></li>
+            <li><a href="https://about.gitlab.com/free-trial/">Try GitLab for free</a></li>
+        </ul>
+    </div>
+
+    
+    
+    
+
+    <div class="gl-col-span-1  gl-row-start-2 lg:gl-row-start-1">
+      <div class="footer-section-title gl-heading-3">Feedback</div>
+      <ul class="gl-list-none gl-p-0">
+
+        
+        
+          <li><a href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/project/integrations/webhooks.md">View page source</a></li>
+        
+        
+          <li><a href="https://gitlab.com/-/ide/project/gitlab-org/gitlab/edit/master/-/doc/user/project/integrations/webhooks.md">Edit in Web IDE</a></li>
+        
+          <li><a href="https://about.gitlab.com/community/contribute/">Contribute to GitLab</a></li>
+          <li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Documentation">Suggest updates</a></li>
+      </ul>
+    </div>
+
+    
+    <div class="gl-col-span-1 gl-row-start-3 lg:gl-row-start-1">
+      <div class="footer-section-title gl-heading-3">Help &amp; Community</div>
+      <ul class="gl-list-none gl-p-0">
+          <li><a href="https://university.gitlab.com/pages/certifications">Get certified</a></li>
+          <li><a href="https://about.gitlab.com/support/">Get support</a></li>
+          <li><a href="https://forum.gitlab.com/new-topic?title=topic%20title&amp;body=topic%20body&amp;tags=docs-feedback">Post on the GitLab forum</a></li>
+      </ul>
+    </div>
+
+    
+    <div class="gl-col-span-1 gl-row-start-3 lg:gl-row-start-1">
+      <div class="footer-section-title gl-heading-3">Resources</div>
+      <ul class="gl-list-none gl-p-0"><li>
+              <a href="https://about.gitlab.com/terms/">
+                Terms
+              </a></li><li>
+              <a href="https://about.gitlab.com/privacy/">
+                Privacy statement
+              </a></li><li>
+              <a href="https://docs.gitlab.com/19.3/legal/use_generative_ai/">
+                Use of generative AI
+              </a></li><li>
+              <a href="https://docs.gitlab.com/19.3/legal/licensing_policy/">
+                Acceptable use of user licenses
+              </a></li></ul>
+    </div>
+  </div>
+</section>
+
+  </footer>
+  <script type="module" src="./Webhooks _ GitLab Docs_files/main.js.下载"></script>
+
+  
+
+  
+
+  
+
+<div class="table-sticky-clone" aria-hidden="true" style="top: 148px; left: 466px; width: 732px;"><table class="docs-table" style="width: 717px; transform: translateX(0px);"><thead>
+      <tr>
+        <th style="width: 195.188px;">Header</th>
+        <th style="width: 260.729px;">Description</th>
+        <th style="width: 260.75px;">Example</th>
+      </tr>
+    </thead></table></div></body></html>

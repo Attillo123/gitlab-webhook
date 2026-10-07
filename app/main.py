@@ -13,6 +13,7 @@ from .config import settings
 from .events import event_kind, normalize_event
 from .feishu import FeishuDeliveryError, send_to_feishu
 from .formatter import format_event
+from .gitlab_auth import GitLabAuthenticationError, GitLabAuthenticationNotConfigured, verify_gitlab_request
 
 logging.basicConfig(level=getattr(logging, settings.log_level.upper(), logging.INFO), format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger("gitlab-webhook")
@@ -65,24 +66,37 @@ async def gitlab_webhook(bot_id: str, request: Request) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="Request body must be valid JSON") from exc
     if not isinstance(payload, dict):
         raise HTTPException(status_code=400, detail="Request body must be a JSON object")
-    if settings.gitlab_secret_token and request.headers.get("x-gitlab-token") != settings.gitlab_secret_token:
-        raise HTTPException(status_code=401, detail="Invalid GitLab webhook token")
+    try:
+        auth_method = verify_gitlab_request(
+            request.headers,
+            raw,
+            settings.gitlab_signing_token,
+            settings.gitlab_secret_token,
+            settings.gitlab_webhook_tolerance_seconds,
+        )
+    except GitLabAuthenticationError as exc:
+        logger.warning("webhook authentication failed: %s", exc)
+        raise HTTPException(status_code=401, detail=str(exc)) from exc
+    except GitLabAuthenticationNotConfigured as exc:
+        logger.error("webhook authentication is not configured")
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     header = request.headers.get("x-gitlab-event", "")
     # Duo callbacks explicitly reuse payload event_id across delivery retries.
     flow_event_id = payload.get("event_id") if event_kind(header, payload) == "duo_workflow" else None
     event_id = (flow_event_id if isinstance(flow_event_id, str) else None) or request.headers.get("idempotency-key") or request.headers.get("webhook-id") or request.headers.get("x-gitlab-webhook-uuid") or request.headers.get("x-gitlab-event-uuid")
     if not event_id:
         event_id = hashlib.sha256(raw).hexdigest()
-    if dedupe.seen(event_id):
+    dedupe_key = f"{bot_id}:{event_id}"
+    if dedupe.seen(dedupe_key):
         return {"ok": True, "duplicate": True, "event_id": event_id}
     event = normalize_event(header, payload, event_id)
     message = format_event(event, settings.max_message_length)
-    logger.info("received event=%s kind=%s project=%s event_id=%s", header, event.kind, event.project_label, event_id)
+    logger.info("received event=%s kind=%s project=%s auth=%s event_id=%s", header, event.kind, event.project_label, auth_method, event_id)
     try:
         result = await send_to_feishu(message, bot_id, settings.feishu_secret, settings.feishu_timeout, settings.feishu_retry_count, settings.feishu_retry_backoff)
     except FeishuDeliveryError as exc:
         # Let GitLab retry a failed delivery instead of suppressing it as a duplicate.
-        dedupe.discard(event_id)
+        dedupe.discard(dedupe_key)
         logger.exception("delivery failed event_id=%s", event_id)
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     return {"ok": True, "event_id": event_id, "event": event.kind, "feishu": result}

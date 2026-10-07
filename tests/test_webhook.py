@@ -168,7 +168,7 @@ def test_different_path_ids_select_different_feishu_bots(monkeypatch):
     async def request():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://test") as client:
             for bot_id in (BOT_A, BOT_B):
-                response = await client.post(f"/webhook/gitlab/{bot_id}", json={"object_kind": "push"}, headers={"X-Gitlab-Token": "test-secret", "Idempotency-Key": bot_id})
+                response = await client.post(f"/webhook/gitlab/{bot_id}", json={"object_kind": "push"}, headers={"X-Gitlab-Token": "test-secret", "Idempotency-Key": "same-gitlab-event"})
                 assert response.status_code == 200
     asyncio.run(request())
     assert selected == [BOT_A, BOT_B]

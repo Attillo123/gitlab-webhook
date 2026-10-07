@@ -16,7 +16,9 @@ def _int(name: str, default: int) -> int:
 
 @dataclass(frozen=True)
 class Settings:
+    gitlab_signing_token: str = os.getenv("GITLAB_SIGNING_TOKEN", "")
     gitlab_secret_token: str = os.getenv("GITLAB_SECRET_TOKEN", "")
+    gitlab_webhook_tolerance_seconds: int = _int("GITLAB_WEBHOOK_TOLERANCE_SECONDS", 300)
     feishu_secret: str = os.getenv("FEISHU_SECRET", "")
     feishu_timeout: float = float(os.getenv("FEISHU_TIMEOUT", "10"))
     feishu_retry_count: int = _int("FEISHU_RETRY_COUNT", 3)

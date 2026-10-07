@@ -1,0 +1,13 @@
+services:
+  gitlab-webhook:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "7001:7001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:7001/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
